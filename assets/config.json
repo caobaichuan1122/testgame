@@ -1,0 +1,134 @@
+{
+  "_comment": "Asset configuration — Middle-earth: Shadows of Arda",
+
+  "tiles": {
+    "source": "tiles/tileset.png",
+    "tile_w": 32,
+    "tile_h": 26,
+    "mapping": {
+      "1": 0, "2": 1, "3": 2, "4": 3, "5": 4,
+      "6": 5, "7": 6, "8": 7, "9": 8,
+      "10": 9, "11": 10, "12": 11, "13": 12
+    }
+  },
+
+  "player": {
+    "source": "player/player.png",
+    "frame_w": 32,
+    "frame_h": 32,
+    "anchor": [16, 28],
+    "anims": {
+      "idle": { "row": 0, "frames": 4, "speed": 8 },
+      "walk": { "row": 1, "frames": 6, "speed": 6 }
+    }
+  },
+
+  "enemies": {
+    "orc": {
+      "source": "enemies/orc.png",
+      "frame_w": 16,
+      "frame_h": 16,
+      "anchor": [8, 14],
+      "anims": {
+        "idle": { "row": 0, "frames": 4, "speed": 10 },
+        "walk": { "row": 1, "frames": 4, "speed": 6 }
+      }
+    },
+    "wight": {
+      "source": "enemies/wight.png",
+      "frame_w": 16,
+      "frame_h": 16,
+      "anchor": [8, 14],
+      "anims": {
+        "idle": { "row": 0, "frames": 4, "speed": 8 },
+        "walk": { "row": 1, "frames": 4, "speed": 6 }
+      }
+    },
+    "uruk_archer": {
+      "source": "enemies/uruk.png",
+      "frame_w": 16,
+      "frame_h": 16,
+      "anchor": [8, 14],
+      "anims": {
+        "idle": { "row": 0, "frames": 4, "speed": 8 },
+        "walk": { "row": 1, "frames": 4, "speed": 6 }
+      }
+    },
+    "cave_troll": {
+      "source": "enemies/cave_troll.png",
+      "frame_w": 32,
+      "frame_h": 32,
+      "anchor": [16, 28],
+      "anims": {
+        "idle": { "row": 0, "frames": 4, "speed": 10 },
+        "walk": { "row": 1, "frames": 4, "speed": 8 }
+      }
+    }
+  },
+
+  "npcs": {
+    "gandalf": {
+      "source": "npcs/gandalf.png",
+      "frame_w": 16,
+      "frame_h": 16,
+      "anchor": [8, 14],
+      "anims": {
+        "idle": { "row": 0, "frames": 4, "speed": 12 }
+      }
+    },
+    "barliman": {
+      "source": "npcs/hobbit.png",
+      "frame_w": 16,
+      "frame_h": 16,
+      "anchor": [8, 14],
+      "anims": {
+        "idle": { "row": 0, "frames": 4, "speed": 12 }
+      }
+    },
+    "gimli": {
+      "source": "npcs/dwarf.png",
+      "frame_w": 16,
+      "frame_h": 16,
+      "anchor": [8, 14],
+      "anims": {
+        "idle": { "row": 0, "frames": 4, "speed": 12 }
+      }
+    },
+    "arwen": {
+      "source": "npcs/elf.png",
+      "frame_w": 16,
+      "frame_h": 16,
+      "anchor": [8, 14],
+      "anims": {
+        "idle": { "row": 0, "frames": 4, "speed": 12 }
+      }
+    },
+    "boromir": {
+      "source": "npcs/gondor.png",
+      "frame_w": 16,
+      "frame_h": 16,
+      "anchor": [8, 14],
+      "anims": {
+        "idle": { "row": 0, "frames": 4, "speed": 12 }
+      }
+    },
+    "frodo": {
+      "source": "npcs/hobbit.png",
+      "frame_w": 16,
+      "frame_h": 16,
+      "anchor": [8, 14],
+      "anims": {
+        "idle": { "row": 0, "frames": 4, "speed": 12 }
+      }
+    },
+    "sam": {
+      "source": "npcs/hobbit.png",
+      "frame_w": 16,
+      "frame_h": 16,
+      "anchor": [8, 14],
+      "anims": {
+        "idle": { "row": 0, "frames": 4, "speed": 12 }
+      }
+    }
+  }
+}
