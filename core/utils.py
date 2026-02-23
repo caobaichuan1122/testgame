@@ -6,7 +6,7 @@ import os
 import pygame
 from core.settings import HALF_W, HALF_H, INTERNAL_WIDTH, INTERNAL_HEIGHT, PIXEL_SCALE
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # project root
 ASSETS_DIR = os.path.join(BASE_DIR, "assets")
 
 
@@ -70,7 +70,7 @@ def _resolve_font_path():
     if _font_path is not None:
         return _font_path if _font_path != "" else None
 
-    import settings
+    import core.settings as settings
     if getattr(settings, "LANGUAGE", "en") == "zh":
         # Prefer local assets/font.ttf
         local_font = os.path.join(ASSETS_DIR, "font.ttf")

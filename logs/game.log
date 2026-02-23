@@ -1,0 +1,55 @@
+2026-02-23 11:30:27 [INFO    ] game.main: Game starting
+2026-02-23 11:30:27 [INFO    ] game.game: Main loop started
+2026-02-23 11:30:27 [ERROR   ] game.main: Unhandled exception — game crashed
+Traceback (most recent call last):
+  File "D:\t-power\testgame\main.py", line 15, in main
+    game.run()
+  File "D:\t-power\testgame\core\game.py", line 229, in run
+    self.draw()
+  File "D:\t-power\testgame\core\game.py", line 191, in draw
+    self.ui.menu_ui.draw_main_menu(self.screen)
+  File "D:\t-power\testgame\ui\ui_menu.py", line 15, in draw_main_menu
+    font_big = get_font(FONT_UI_LG)
+               ^^^^^^^^^^^^^^^^^^^^
+  File "D:\t-power\testgame\core\utils.py", line 92, in get_font
+    font_path = _resolve_font_path()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "D:\t-power\testgame\core\utils.py", line 73, in _resolve_font_path
+    import settings
+ModuleNotFoundError: No module named 'settings'
+2026-02-23 11:30:27 [INFO    ] game.main: Game exited
+2026-02-23 11:30:48 [INFO    ] game.main: Game starting
+2026-02-23 11:30:48 [INFO    ] game.game: Main loop started
+2026-02-23 11:30:48 [ERROR   ] game.main: Unhandled exception — game crashed
+Traceback (most recent call last):
+  File "D:\t-power\testgame\main.py", line 15, in main
+    game.run()
+  File "D:\t-power\testgame\core\game.py", line 229, in run
+    self.draw()
+  File "D:\t-power\testgame\core\game.py", line 191, in draw
+    self.ui.menu_ui.draw_main_menu(self.screen)
+  File "D:\t-power\testgame\ui\ui_menu.py", line 15, in draw_main_menu
+    font_big = get_font(FONT_UI_LG)
+               ^^^^^^^^^^^^^^^^^^^^
+  File "D:\t-power\testgame\core\utils.py", line 92, in get_font
+    font_path = _resolve_font_path()
+                ^^^^^^^^^^^^^^^^^^^^
+  File "D:\t-power\testgame\core\utils.py", line 73, in _resolve_font_path
+    import settings
+ModuleNotFoundError: No module named 'settings'
+2026-02-23 11:30:48 [INFO    ] game.main: Game exited
+2026-02-23 11:32:12 [INFO    ] game.main: Game starting
+2026-02-23 11:32:13 [INFO    ] game.game: Main loop started
+2026-02-23 11:33:51 [INFO    ] game.main: Game starting
+2026-02-23 11:33:51 [INFO    ] game.game: Main loop started
+2026-02-23 11:33:54 [INFO    ] game.game: Loading demo level
+2026-02-23 11:33:54 [INFO    ] game.game: Level loaded: 20 enemies, 7 NPCs, player at (30, 30)
+2026-02-23 11:33:58 [INFO    ] game.game: Main loop ended
+2026-02-23 11:33:58 [INFO    ] game.main: Game exited
+2026-02-23 11:36:53 [INFO    ] game.main: Game starting
+2026-02-23 11:36:53 [INFO    ] game.game: Main loop started
+2026-02-23 11:36:55 [INFO    ] game.game: Loading demo level
+2026-02-23 11:36:55 [INFO    ] game.game: Level loaded: 20 enemies, 7 NPCs, player at (30, 30)
+2026-02-23 11:36:59 [INFO    ] game.quest: Quest accepted: quest_collect (阿西拉斯采集)
+2026-02-23 11:37:37 [INFO    ] game.game: Main loop ended
+2026-02-23 11:37:37 [INFO    ] game.main: Game exited

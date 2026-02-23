@@ -9,7 +9,7 @@ import pygame
 
 # --------------- paths ---------------
 _BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-ASSETS_DIR = os.path.join(_BASE_DIR, "assets")
+ASSETS_DIR = _BASE_DIR  # sprite_manager.py lives inside the assets/ folder
 SPRITE_CONFIG_PATH = os.path.join(ASSETS_DIR, "config.json")
 
 # --------------- global cache ---------------

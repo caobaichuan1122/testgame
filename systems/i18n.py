@@ -1103,7 +1103,7 @@ LANG = {
 
 def t(key):
     """Get translated string, fall back to English, then to key itself."""
-    import settings
+    import core.settings as settings
     entry = LANG.get(key)
     if not entry:
         return key
@@ -1127,8 +1127,8 @@ def get_item_desc(item_id):
 
 def switch_language():
     """Switch language (zh↔en), clear font cache and reload level."""
-    import settings
-    import utils
+    import core.settings as settings
+    import core.utils as utils
     if settings.LANGUAGE == "zh":
         settings.LANGUAGE = "en"
     else:
