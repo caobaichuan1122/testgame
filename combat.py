@@ -1,5 +1,5 @@
 # ============================================================
-#  战斗系统：伤害公式、暴击、弧形判定
+#  Combat system: damage formulas, crits, arc detection
 # ============================================================
 import math
 import random
@@ -26,20 +26,20 @@ COMBAT_COLORS = {
 
 
 def calc_damage(base_dmg, stat_bonus, weapon_bonus, target_def):
-    """伤害公式：实际伤害 = max(1, 基础 + 属性加成 + 武器加成 - 防御*0.8)"""
+    """Damage formula: actual = max(1, base + stat_bonus + weapon_bonus - def*0.8)."""
     raw = base_dmg + stat_bonus + weapon_bonus
     reduced = max(1, raw - int(target_def * 0.8))
     return reduced
 
 
 def check_crit(dex):
-    """暴击检测：基础5% + DEX*1%"""
+    """Crit check: base 5% + DEX*1%."""
     crit_chance = 0.05 + dex * 0.01
     return random.random() < crit_chance
 
 
 def get_combat_params(mode):
-    """获取战斗模式的基础参数"""
+    """Get base params for a combat mode."""
     if mode == COMBAT_MELEE:
         return {
             "range": MELEE_RANGE,
@@ -65,7 +65,7 @@ def get_combat_params(mode):
 
 
 def melee_arc_hit(attacker_wx, attacker_wy, facing_angle, target_wx, target_wy):
-    """检测目标是否在近战弧形范围内"""
+    """Check if target is within melee arc range."""
     dist = distance(attacker_wx, attacker_wy, target_wx, target_wy)
     if dist > MELEE_RANGE:
         return False
@@ -75,7 +75,7 @@ def melee_arc_hit(attacker_wx, attacker_wy, facing_angle, target_wx, target_wy):
 
 
 def perform_melee_attack(player, entities):
-    """执行近战攻击，返回受击敌人列表"""
+    """Execute melee attack; return list of (enemy, dmg, is_crit)."""
     params = get_combat_params(COMBAT_MELEE)
     hit_enemies = []
 
@@ -99,7 +99,7 @@ def perform_melee_attack(player, entities):
 
 
 def perform_ranged_attack(player, entities):
-    """执行远程攻击：生成箭矢投射物"""
+    """Execute ranged attack: spawn arrow projectile."""
     from projectile import Projectile
     from settings import ARROW_SPEED, COLOR_ARROW
 
@@ -125,7 +125,7 @@ def perform_ranged_attack(player, entities):
 
 
 def perform_magic_attack(player, entities):
-    """执行魔法攻击：消耗MP，生成魔法弹"""
+    """Execute magic attack: consume MP, spawn magic bolt."""
     if not player.stats.use_mp(MAGIC_COST):
         return None
 

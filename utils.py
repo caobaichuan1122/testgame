@@ -1,5 +1,5 @@
 # ============================================================
-#  工具函数：等距坐标转换、距离、角度
+#  Utility functions: isometric transforms, distance, angles
 # ============================================================
 import math
 import os
@@ -10,7 +10,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ASSETS_DIR = os.path.join(BASE_DIR, "assets")
 
 
-# --- 等距坐标转换 ---
+# --- Isometric coordinate transforms ---
 
 def world_to_screen(wx, wy):
     sx = (wx - wy) * HALF_W
@@ -24,14 +24,14 @@ def screen_to_world(sx, sy):
     return wx, wy
 
 
-# --- UI 坐标缩放 ---
+# --- UI coordinate scaling ---
 
 def ui(v):
-    """将内部分辨率坐标缩放为屏幕分辨率坐标"""
+    """Scale internal-resolution coordinate to screen-resolution."""
     return int(v * PIXEL_SCALE)
 
 
-# --- 数学工具 ---
+# --- Math utilities ---
 
 def distance(x1, y1, x2, y2):
     return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
@@ -59,31 +59,31 @@ def clamp(value, lo, hi):
     return max(lo, min(hi, value))
 
 
-# --- 字体缓存 ---
+# --- Font cache ---
 _font_cache = {}
-_font_path = None  # 缓存字体路径
+_font_path = None  # cached font path
 
 
 def _resolve_font_path():
-    """查找支持中文的字体文件路径，找不到则返回None（使用默认字体）"""
+    """Find a font file that supports CJK characters; return None to use default."""
     global _font_path
     if _font_path is not None:
         return _font_path if _font_path != "" else None
 
     import settings
     if getattr(settings, "LANGUAGE", "en") == "zh":
-        # 优先查找本地 assets/font.ttf
+        # Prefer local assets/font.ttf
         local_font = os.path.join(ASSETS_DIR, "font.ttf")
         if os.path.isfile(local_font):
             _font_path = local_font
             return _font_path
-        # 在系统字体中查找中文字体
+        # Search system fonts for CJK support
         for name in ("simhei", "microsoftyahei", "dengxian", "simsun"):
             path = pygame.font.match_font(name)
             if path:
                 _font_path = path
                 return _font_path
-    _font_path = ""  # 标记为已查找但未找到
+    _font_path = ""  # mark as searched but not found
     return None
 
 
@@ -97,18 +97,18 @@ def get_font(size):
     return _font_cache[size]
 
 
-# 内部分辨率字体（实体浮动文字，画在 canvas 上）
+# Internal-resolution fonts (entity floating text, drawn on canvas)
 FONT_SM = 12
 FONT_MD = 14
 FONT_LG = 20
 
-# 屏幕分辨率字体（UI 文字，画在 screen 上）
+# Screen-resolution fonts (UI text, drawn on screen)
 FONT_UI_SM = 24
 FONT_UI_MD = 28
 FONT_UI_LG = 48
 
 
-# --- 渲染工具 ---
+# --- Rendering utilities ---
 
 def create_surface(width=INTERNAL_WIDTH, height=INTERNAL_HEIGHT):
     return pygame.Surface((width, height), pygame.SRCALPHA)

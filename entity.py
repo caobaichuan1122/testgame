@@ -1,12 +1,12 @@
 # ============================================================
-#  Entity 基类 + EntityManager
+#  Entity base class + EntityManager
 # ============================================================
 import pygame
 from utils import world_to_screen
 
 
 class Entity:
-    """所有游戏实体的基类"""
+    """Base class for all game entities."""
 
     def __init__(self, wx, wy):
         self.wx = float(wx)
@@ -15,7 +15,7 @@ class Entity:
 
     @property
     def sort_key(self):
-        """深度排序键：wx + wy 越大越靠前（画家算法）"""
+        """Depth sort key: higher wx+wy draws on top (painter's algorithm)."""
         return self.wx + self.wy
 
     def update(self, game):
@@ -25,12 +25,12 @@ class Entity:
         pass
 
     def draw_labels(self, surface, camera):
-        """绘制文字标签到屏幕层（子类可覆盖）"""
+        """Draw text labels onto screen layer (subclasses may override)."""
         pass
 
 
 class EntityManager:
-    """管理所有实体：分类更新/绘制/空间查询"""
+    """Manages all entities: categorized update/draw/spatial queries."""
 
     def __init__(self):
         self.player = None
@@ -39,7 +39,7 @@ class EntityManager:
         self.projectiles = []
 
     def all_entities(self):
-        """返回所有活跃实体的列表（用于深度排序绘制）"""
+        """Return list of all active entities (for depth-sorted drawing)."""
         entities = []
         if self.player and self.player.active:
             entities.append(self.player)
@@ -60,18 +60,18 @@ class EntityManager:
         for p in self.projectiles:
             if p.active:
                 p.update(game)
-        # 清理已死亡的投射物
+        # Remove expired projectiles
         self.projectiles = [p for p in self.projectiles if p.active]
 
     def draw(self, surface, camera):
-        """按深度排序绘制所有实体"""
+        """Draw all entities sorted by depth."""
         entities = self.all_entities()
         entities.sort(key=lambda e: e.sort_key)
         for e in entities:
             e.draw(surface, camera)
 
     def draw_labels(self, surface, camera):
-        """在屏幕层绘制所有实体的文字标签（缩放后调用）"""
+        """Draw text labels for all entities on screen layer (called after scaling)."""
         entities = self.all_entities()
         entities.sort(key=lambda e: e.sort_key)
         for e in entities:
@@ -87,7 +87,7 @@ class EntityManager:
         self.projectiles.append(proj)
 
     def get_enemies_in_range(self, wx, wy, radius):
-        """返回指定范围内的活跃敌人列表"""
+        """Return list of active enemies within radius."""
         from utils import distance
         result = []
         for e in self.enemies:
@@ -97,7 +97,7 @@ class EntityManager:
         return result
 
     def get_nearest_npc(self, wx, wy, radius):
-        """返回最近的NPC（如果在范围内）"""
+        """Return nearest NPC within radius, or None."""
         from utils import distance
         best = None
         best_dist = radius + 1

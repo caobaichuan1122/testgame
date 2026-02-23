@@ -1,10 +1,10 @@
 # ============================================================
-#  国际化 (i18n) — 中英双语支持
+#  Internationalization (i18n) — bilingual Chinese/English support
 # ============================================================
 
 LANG = {
     # ========================
-    #  通用 UI
+    #  General UI
     # ========================
     "press_enter_start": {
         "en": "Press ENTER to start",
@@ -27,7 +27,7 @@ LANG = {
         "zh": "按 ENTER 重新开始",
     },
 
-    # --- 控制说明 ---
+    # --- Controls ---
     "controls_move": {
         "en": "WASD: Move",
         "zh": "WASD: 移动",
@@ -54,7 +54,7 @@ LANG = {
     },
 
     # ========================
-    #  背包 / 装备
+    #  Inventory / Equipment
     # ========================
     "inventory": {
         "en": "INVENTORY",
@@ -130,7 +130,7 @@ LANG = {
     },
 
     # ========================
-    #  商店
+    #  Shop
     # ========================
     "shop": {
         "en": "SHOP",
@@ -178,7 +178,7 @@ LANG = {
     },
 
     # ========================
-    #  任务日志
+    #  Quest log
     # ========================
     "quest_log": {
         "en": "QUEST LOG",
@@ -210,7 +210,7 @@ LANG = {
     },
 
     # ========================
-    #  消息日志
+    #  Message log
     # ========================
     "message_log": {
         "en": "Message Log",
@@ -246,7 +246,7 @@ LANG = {
     },
 
     # ========================
-    #  战斗场景
+    #  Combat scene
     # ========================
     "wild_appears": {
         "en": "A wild {name} appears!",
@@ -377,7 +377,7 @@ LANG = {
         "zh": " [免费]",
     },
 
-    # --- 战斗菜单选项（显示用） ---
+    # --- Combat menu options (display) ---
     "opt_attack": {
         "en": "Attack",
         "zh": "攻击",
@@ -399,7 +399,7 @@ LANG = {
         "zh": "逃跑",
     },
 
-    # --- 技能名称 ---
+    # --- Skill names ---
     "skill_slash": {
         "en": "Slash (STR)",
         "zh": "斩击 (力量)",
@@ -426,7 +426,7 @@ LANG = {
     },
 
     # ========================
-    #  玩家消息
+    #  Player messages
     # ========================
     "discovered": {
         "en": "Discovered: {name}",
@@ -470,7 +470,7 @@ LANG = {
     },
 
     # ========================
-    #  游戏日志
+    #  Game log
     # ========================
     "welcome_msg": {
         "en": "Welcome to the village! Talk to NPCs with [E]. Press [Enter] to chat. Look for ! and $ icons.",
@@ -478,7 +478,7 @@ LANG = {
     },
 
     # ========================
-    #  NPC 气泡 / 护送
+    #  NPC bubbles / escort
     # ========================
     "escort_arrived": {
         "en": "We made it! Thank you!",
@@ -490,7 +490,7 @@ LANG = {
     },
 
     # ========================
-    #  战斗模式名称
+    #  Combat mode names
     # ========================
     "combat_sword": {
         "en": "Sword",
@@ -506,7 +506,7 @@ LANG = {
     },
 
     # ========================
-    #  任务提示（HUD底部）
+    #  Quest hints (HUD bottom)
     # ========================
     "hint_timed": {
         "en": "{name}: {progress}/{required} ({secs}s)",
@@ -530,7 +530,7 @@ LANG = {
     },
 
     # ========================
-    #  物品名称
+    #  Item names
     # ========================
     "item_sting": {
         "en": "Sting",
@@ -582,7 +582,7 @@ LANG = {
     },
 
     # ========================
-    #  物品描述
+    #  Item descriptions
     # ========================
     "desc_sting": {
         "en": "An ancient Elven blade that glows blue near Orcs.",
@@ -634,9 +634,9 @@ LANG = {
     },
 
     # ========================
-    #  NPC 闲聊（气泡台词）
+    #  NPC idle chat (bubble lines)
     # ========================
-    # 甘道夫
+    # Gandalf
     "idle_gandalf_1": {
         "en": "A shadow grows in the East...",
         "zh": "一片阴影在东方蔓延……",
@@ -653,7 +653,7 @@ LANG = {
         "en": "All we have to decide is what to do with the time given to us.",
         "zh": "我们要做的，就是决定如何利用被赋予的时间。",
     },
-    # 酒馆老板
+    # Innkeeper
     "idle_barliman_1": {
         "en": "Welcome to the Prancing Pony!",
         "zh": "欢迎来到跃马旅店！",
@@ -666,7 +666,7 @@ LANG = {
         "en": "Need supplies for the road?",
         "zh": "需要旅途补给吗？",
     },
-    # 吉姆利
+    # Gimli
     "idle_gimli_1": {
         "en": "Mithril and mountain-steel!",
         "zh": "秘银与山钢！",
@@ -679,7 +679,7 @@ LANG = {
         "en": "My axe is not for sale, but these are!",
         "zh": "我的斧头不卖，但这些可以！",
     },
-    # 阿尔温
+    # Arwen
     "idle_arwen_1": {
         "en": "The wounded need tending...",
         "zh": "伤者需要照料……",
@@ -696,7 +696,7 @@ LANG = {
         "en": "Orc blood, vile as it is, has medicinal uses.",
         "zh": "兽人之血虽然污秽，却有药用价值。",
     },
-    # 博罗米尔
+    # Boromir
     "idle_boromir_1": {
         "en": "Gondor has need of brave souls.",
         "zh": "刚铎需要勇敢的灵魂。",
@@ -713,7 +713,7 @@ LANG = {
         "en": "I hear Orc drums in the deep...",
         "zh": "我听到了深处兽人的战鼓声……",
     },
-    # 弗罗多
+    # Frodo
     "idle_frodo_1": {
         "en": "I wish the Ring had never come to me...",
         "zh": "我希望魔戒从未来到我身边……",
@@ -730,7 +730,7 @@ LANG = {
         "en": "I hope we don't meet any Orcs.",
         "zh": "希望我们不会遇到兽人。",
     },
-    # 山姆
+    # Sam
     "idle_sam_1": {
         "en": "I could do with a nice bit of fish...",
         "zh": "来一条鲜鱼就好了……",
@@ -749,14 +749,14 @@ LANG = {
     },
 
     # ========================
-    #  对话（NPC对话树文本）
+    #  Dialogue (NPC dialogue tree text)
     # ========================
-    # 甘道夫默认
+    # Gandalf default
     "dlg_gandalf_default": {
         "en": "Ah, a traveler! Middle-earth darkens, and we need all the help we can muster. Speak with me if you seek a quest.",
         "zh": "啊，一位旅人！中土世界日渐黑暗，我们需要一切能争取到的帮助。如果你想接任务，请与我交谈。",
     },
-    # 兽人任务
+    # Orc quest
     "dlg_quest_orc_accept": {
         "en": "Orcs have overrun the Fields of Rohan to the east! Ride out and defeat 5 of them before they reach the Shire.",
         "zh": "兽人已经占领了东边的洛汗平原！出发击败5只兽人，阻止它们到达夏尔。",
@@ -769,7 +769,7 @@ LANG = {
         "en": "Well done! The fields are safer now. But a greater evil stirs in the Mines of Moria to the north...",
         "zh": "干得好！平原现在安全多了。但更大的邪恶正在北方的摩瑞亚矿洞中酝酿……",
     },
-    # Boss任务
+    # Boss quest
     "dlg_quest_boss_accept": {
         "en": "A Cave Troll lurks in the depths of Moria. Many have entered; none have returned. Will you face it?",
         "zh": "一只洞穴巨魔潜伏在摩瑞亚的深处。许多人进去了，无人生还。你敢面对它吗？",
@@ -782,12 +782,12 @@ LANG = {
         "en": "The Troll is slain! Durin's folk would be proud. Take this mithril coat as your reward.",
         "zh": "巨魔被消灭了！都灵的子民会为你骄傲的。拿走这件秘银铠甲作为奖赏。",
     },
-    # 酒馆老板
+    # Innkeeper
     "dlg_barliman_default": {
         "en": "Welcome to the Prancing Pony! We've got provisions for any journey. What'll it be?",
         "zh": "欢迎来到跃马旅店！我们为各种旅途准备了补给。你需要什么？",
     },
-    # 吉姆利
+    # Gimli
     "dlg_gimli_default": {
         "en": "Need arms forged by Dwarven hands? You'll find none finer this side of the Lonely Mountain.",
         "zh": "需要矮人锻造的武器吗？在孤山这边，你找不到比这更好的了。",
@@ -800,7 +800,7 @@ LANG = {
         "en": "Depends on your foe. Anduril cleaves through armor up close. The Bow of Galadhrim lets you strike from afar. Choose wisely!",
         "zh": "取决于你的敌人。安都瑞尔近战可以劈开铠甲。加拉德瑞姆之弓让你远程打击。明智选择！",
     },
-    # 阿尔温
+    # Arwen
     "dlg_arwen_default": {
         "en": "Mae govannen. I am Arwen of Rivendell. I can heal your wounds, or perhaps you could gather herbs for me?",
         "zh": "Mae govannen。我是瑞文戴尔的阿尔温。我可以治愈你的伤，或者你能帮我采集草药？",
@@ -809,7 +809,7 @@ LANG = {
         "en": "The light of the Evenstar shines upon you. Go now, renewed.",
         "zh": "暮星之光照耀着你。去吧，焕然一新。",
     },
-    # 收集任务
+    # Collect quest
     "dlg_quest_collect_accept": {
         "en": "I need 3 vials of Orc Blood for an Athelas remedy. The Orcs in the Fields of Rohan carry it. Will you help?",
         "zh": "我需要3瓶兽人之血来制作阿西拉斯药剂。洛汗平原上的兽人身上有。你愿意帮忙吗？",
@@ -822,7 +822,7 @@ LANG = {
         "en": "These will save many lives. The Elves of Rivendell thank you. Take these cordials as thanks!",
         "zh": "这些将挽救很多生命。瑞文戴尔的精灵感谢你。拿走这些甘露作为谢礼！",
     },
-    # 博罗米尔
+    # Boromir
     "dlg_boromir_default": {
         "en": "Hold! I am Boromir, Captain of the White Tower. Gondor needs scouts to survey the borderlands.",
         "zh": "站住！我是博罗米尔，白塔的首领。刚铎需要侦察兵勘察边境。",
@@ -831,7 +831,7 @@ LANG = {
         "en": "Fangorn Forest to the northwest — ancient and perilous. The Mines of Moria to the north. And Mordor's wastes beyond the bridge to the southeast.",
         "zh": "西北是法贡森林——古老而危险。北方是摩瑞亚矿洞。桥的东南方是魔多荒原。",
     },
-    # 探索任务
+    # Explore quest
     "dlg_quest_explore_accept": {
         "en": "Scout these three regions for Gondor: Fangorn Forest, the Mines of Moria, and the Mordor Wastes. Report back when done.",
         "zh": "为刚铎侦察这三个区域：法贡森林、摩瑞亚矿洞和魔多荒原。完成后回来报告。",
@@ -844,7 +844,7 @@ LANG = {
         "en": "Excellent reconnaissance! Your intel will strengthen our defenses. Gondor rewards its allies well.",
         "zh": "出色的侦察！你的情报将加强我们的防御。刚铎厚待它的盟友。",
     },
-    # 弗罗多
+    # Frodo
     "dlg_frodo_default": {
         "en": "Please... I've been separated from the Fellowship. Could you guide me back to Hobbiton?",
         "zh": "拜托……我和远征队失散了。你能带我回霍比屯吗？",
@@ -853,7 +853,7 @@ LANG = {
         "en": "Press 1/2/3 to switch combat modes. Melee hits hard, ranged is safe, magic costs MP but packs a punch.",
         "zh": "按 1/2/3 切换战斗模式。近战伤害高，远程安全，魔法消耗MP但威力强大。",
     },
-    # 护送任务
+    # Escort quest
     "dlg_quest_escort_accept": {
         "en": "Thank the Valar! Please lead me back to Hobbiton. I'll follow you as fast as my hobbit feet can carry me!",
         "zh": "感谢维拉！请带我回霍比屯。我会用霍比特人的小脚尽力跟上你的！",
@@ -866,7 +866,7 @@ LANG = {
         "en": "The Shire at last! Oh, how I've missed it! Here, take this — you've earned it, friend.",
         "zh": "终于到夏尔了！我好想念这里！拿着这个——你值得拥有，朋友。",
     },
-    # 山姆
+    # Sam
     "dlg_sam_default": {
         "en": "Begging your pardon, but those Uruk-hai across the bridge are scaring all the fish away!",
         "zh": "打扰了，但桥对面那些乌鲁克强兽人把鱼都吓跑了！",
@@ -875,7 +875,7 @@ LANG = {
         "en": "Uruk-hai archers patrol the wastes of Mordor. If someone could deal with a few of them quick-like, maybe the fish would come back...",
         "zh": "乌鲁克弓箭手在魔多荒原巡逻。如果有人能快点解决几个，也许鱼就会回来了……",
     },
-    # 限时任务
+    # Timed quest
     "dlg_quest_timed_accept": {
         "en": "Can you defeat 3 Uruk-hai archers in 60 seconds? Cross the bridge and hurry! Time starts now!",
         "zh": "你能在60秒内击败3个乌鲁克弓箭手吗？过桥快走！计时开始！",
@@ -889,7 +889,7 @@ LANG = {
         "zh": "你做到了！而且还赶上了时间！现在也许我能钓到一两条鱼了。这是你的奖励，当之无愧！",
     },
 
-    # --- 对话选项 ---
+    # --- Dialogue options ---
     "opt_ok": {
         "en": "OK",
         "zh": "好的",
@@ -1004,7 +1004,7 @@ LANG = {
     },
 
     # ========================
-    #  任务名称和描述
+    #  Quest names and descriptions
     # ========================
     "quest_name_orc": {
         "en": "Orc Incursion",
@@ -1056,7 +1056,7 @@ LANG = {
     },
 
     # ========================
-    #  探索区域名称
+    #  Exploration zone names
     # ========================
     "zone_fangorn": {
         "en": "Fangorn Forest",
@@ -1072,7 +1072,7 @@ LANG = {
     },
 
     # ========================
-    #  装备槽名称
+    #  Equipment slot names
     # ========================
     "slot_weapon": {
         "en": "weapon",
@@ -1088,7 +1088,7 @@ LANG = {
     },
 
     # ========================
-    #  语言切换
+    #  Language switching
     # ========================
     "lang_switch_hint": {
         "en": "[L] Language: English",
@@ -1102,7 +1102,7 @@ LANG = {
 
 
 def t(key):
-    """获取翻译字符串，失败时回退到英文，再失败返回key本身"""
+    """Get translated string, fall back to English, then to key itself."""
     import settings
     entry = LANG.get(key)
     if not entry:
@@ -1111,28 +1111,28 @@ def t(key):
 
 
 def tf(key, **kwargs):
-    """获取翻译字符串并格式化"""
+    """Get translated string and format it."""
     return t(key).format(**kwargs)
 
 
 def get_item_name(item_id):
-    """获取物品的翻译名称"""
+    """Get translated item name."""
     return t(f"item_{item_id}")
 
 
 def get_item_desc(item_id):
-    """获取物品的翻译描述"""
+    """Get translated item description."""
     return t(f"desc_{item_id}")
 
 
 def switch_language():
-    """切换语言（zh↔en），清除字体缓存并重新加载关卡"""
+    """Switch language (zh↔en), clear font cache and reload level."""
     import settings
     import utils
     if settings.LANGUAGE == "zh":
         settings.LANGUAGE = "en"
     else:
         settings.LANGUAGE = "zh"
-    # 清除字体缓存（中英文需要不同字体）
+    # Clear font cache (different fonts needed for zh/en)
     utils._font_cache.clear()
     utils._font_path = None

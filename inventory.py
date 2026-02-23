@@ -1,11 +1,11 @@
 # ============================================================
-#  背包系统 + 装备槽 + 物品数据库
+#  Inventory system + equipment slots + item database
 # ============================================================
 
 
-# --- 物品数据库 ---
+# --- Item database ---
 ITEMS = {
-    # 武器
+    # Weapons
     "sting": {
         "name": "Sting", "type": "weapon", "subtype": "melee",
         "bonus": 2, "price": 30,
@@ -30,7 +30,7 @@ ITEMS = {
         "desc": "A staff imbued with the power of the Istari.",
         "color": (130, 80, 255),
     },
-    # 护甲
+    # Armor
     "ranger_cloak": {
         "name": "Ranger Cloak", "type": "armor",
         "bonus": 2, "price": 50,
@@ -43,7 +43,7 @@ ITEMS = {
         "desc": "A coat of mithril rings, light as a feather.",
         "color": (160, 160, 170),
     },
-    # 饰品
+    # Accessories
     "ring_barahir": {
         "name": "Ring of Barahir", "type": "accessory",
         "bonus": 3, "stat": "str", "price": 150,
@@ -56,7 +56,7 @@ ITEMS = {
         "desc": "A leaf-shaped brooch of Lorien, granting swiftness.",
         "color": (50, 200, 150),
     },
-    # 任务材料
+    # Quest materials
     "orc_blood": {
         "name": "Orc Blood", "type": "material",
         "price": 5, "stackable": True,
@@ -69,7 +69,7 @@ ITEMS = {
         "desc": "A cursed fragment from a Morgul blade.",
         "color": (210, 200, 180),
     },
-    # 消耗品
+    # Consumables
     "miruvor": {
         "name": "Miruvor", "type": "consumable",
         "heal": 30, "price": 20, "stackable": True,
@@ -86,28 +86,28 @@ ITEMS = {
 
 
 class Inventory:
-    """背包系统：20格，物品堆叠，装备槽"""
+    """Inventory: 20 slots, stackable items, equipment slots."""
 
     MAX_SLOTS = 20
 
     def __init__(self):
-        # 背包：列表 of {"id": str, "count": int}
+        # Items list: [{"id": str, "count": int}, ...]
         self.items = []
-        # 装备槽
+        # Equipment slots
         self.equipped = {
-            "weapon": None,   # 物品id
+            "weapon": None,   # item id
             "armor": None,
             "accessory": None,
         }
         self.gold = 0
 
     def add_item(self, item_id, count=1):
-        """添加物品到背包，返回是否成功"""
+        """Add item to inventory; return True on success."""
         item_data = ITEMS.get(item_id)
         if not item_data:
             return False
 
-        # 可堆叠的物品尝试合并
+        # Try to stack with existing slot
         if item_data.get("stackable"):
             for slot in self.items:
                 if slot["id"] == item_id:
@@ -121,7 +121,7 @@ class Inventory:
         return True
 
     def remove_item(self, item_id, count=1):
-        """移除物品，返回是否成功"""
+        """Remove item from inventory; return True on success."""
         for i, slot in enumerate(self.items):
             if slot["id"] == item_id:
                 if slot["count"] >= count:
@@ -144,7 +144,7 @@ class Inventory:
         return 0
 
     def equip(self, item_id):
-        """装备物品（从背包移到装备槽）"""
+        """Equip item (move from inventory to equipment slot)."""
         item_data = ITEMS.get(item_id)
         if not item_data:
             return False
@@ -162,7 +162,7 @@ class Inventory:
         if not self.has_item(item_id):
             return False
 
-        # 卸下当前装备
+        # Unequip current item in slot
         old = self.equipped[slot_name]
         if old:
             self.add_item(old)
@@ -172,7 +172,7 @@ class Inventory:
         return True
 
     def unequip(self, slot_name):
-        """卸下装备（放回背包）"""
+        """Unequip item (return to inventory)."""
         item_id = self.equipped.get(slot_name)
         if not item_id:
             return False
@@ -183,7 +183,7 @@ class Inventory:
         return True
 
     def use_item(self, item_id, stats):
-        """使用消耗品"""
+        """Use a consumable item."""
         item_data = ITEMS.get(item_id)
         if not item_data or item_data["type"] != "consumable":
             return False
@@ -199,7 +199,7 @@ class Inventory:
         return True
 
     def get_equipped_weapon(self):
-        """获取已装备武器的数据"""
+        """Get equipped weapon data."""
         wid = self.equipped["weapon"]
         if wid:
             return ITEMS.get(wid)
@@ -212,7 +212,7 @@ class Inventory:
         return None
 
     def get_total_defense(self):
-        """计算装备提供的总防御加成"""
+        """Calculate total defense bonus from equipment."""
         total = 0
         armor = self.get_equipped_armor()
         if armor:
@@ -220,7 +220,7 @@ class Inventory:
         return total
 
     def get_stat_bonus(self, stat_name):
-        """获取装备提供的属性加成"""
+        """Get stat bonus provided by equipped accessory."""
         total = 0
         acc_id = self.equipped["accessory"]
         if acc_id:

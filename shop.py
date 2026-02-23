@@ -1,18 +1,18 @@
 # ============================================================
-#  商店系统：买卖逻辑
+#  Shop system: buy/sell logic
 # ============================================================
 from inventory import ITEMS
 from i18n import t, tf, get_item_name
 
 
 class ShopManager:
-    """管理所有商店"""
+    """Manages all shops."""
 
     def __init__(self):
-        self.shops = {}  # shop_id → shop data
+        self.shops = {}  # shop_id -> shop data
 
     def register(self, shop_id, item_ids):
-        """注册商店
+        """Register a shop.
         item_ids: list of item_id strings
         """
         self.shops[shop_id] = {
@@ -23,7 +23,7 @@ class ShopManager:
         return self.shops.get(shop_id)
 
     def get_shop_items(self, shop_id):
-        """获取商店物品列表 [{id, name, price, ...}]"""
+        """Get shop item list [{id, name, price, ...}]."""
         shop = self.shops.get(shop_id)
         if not shop:
             return []
@@ -35,7 +35,7 @@ class ShopManager:
         return result
 
     def buy_item(self, shop_id, item_id, player):
-        """购买物品，返回是否成功"""
+        """Buy item; return (success, message)."""
         item_data = ITEMS.get(item_id)
         if not item_data:
             return False, t("item_not_found")
@@ -51,7 +51,7 @@ class ShopManager:
         return True, tf("bought_item", name=get_item_name(item_id))
 
     def sell_item(self, item_id, player):
-        """卖出物品（半价），返回是否成功"""
+        """Sell item at half price; return (success, message)."""
         item_data = ITEMS.get(item_id)
         if not item_data:
             return False, t("item_not_found")

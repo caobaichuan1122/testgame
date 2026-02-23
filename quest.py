@@ -1,36 +1,39 @@
 # ============================================================
-#  任务系统：目标跟踪、奖励
+#  Quest system: objective tracking, rewards
 # ============================================================
 from i18n import tf
+from logger import get_logger
+
+log = get_logger("quest")
 
 
 class QuestManager:
-    """管理所有任务"""
+    """Manages all quests."""
 
     def __init__(self):
         # quest_id → quest data
         self.quests = {}
-        self.active_quest_hint = ""  # 当前任务提示
+        self.active_quest_hint = ""  # Current quest hint
 
     def register(self, quest_id, data):
-        """注册任务
+        """Register a quest.
         data: {
             "name": str,
             "desc": str,
             "type": "kill" | "collect" | "talk" | "explore" | "escort" | "timed_kill",
-            "target": str,           # 目标类型/物品/NPC
-            "required": int,         # 需要数量
+            "target": str,           # Target type/item/NPC
+            "required": int,         # Required count
             "progress": 0,
             "rewards": {"xp": int, "gold": int, "items": [str]},
             "status": "available",   # available→active→completable→completed / failed
             # explore-specific:
-            "zones": [{"name":str, "x1","y1","x2","y2"}],  # 探索区域列表
-            "discovered": [],        # 已发现区域名
+            "zones": [{"name":str, "x1","y1","x2","y2"}],  # List of exploration zones
+            "discovered": [],        # Discovered zone names
             # escort-specific:
-            "escort_dest": (x, y),   # 护送目的地
-            "escort_radius": float,  # 到达半径
+            "escort_dest": (x, y),   # Escort destination
+            "escort_radius": float,  # Arrival radius
             # timed_kill-specific:
-            "time_limit": int,       # 秒数
+            "time_limit": int,       # Seconds
         }
         """
         data.setdefault("progress", 0)
@@ -48,15 +51,16 @@ class QuestManager:
             quest["status"] = "active"
             quest["progress"] = 0
             quest["discovered"] = []
-            # 限时任务启动计时器
+            # Start timer for timed quest
             if quest["type"] == "timed_kill":
-                quest["_timer"] = quest.get("time_limit", 60) * 60  # 秒→帧
+                quest["_timer"] = quest.get("time_limit", 60) * 60  # seconds → frames
             self._update_hint()
+            log.info("Quest accepted: %s (%s)", quest_id, quest.get("name", ""))
             return True
         return False
 
     def on_enemy_kill(self, enemy_type):
-        """敌人被击杀时更新任务进度"""
+        """Update quest progress when an enemy is killed."""
         for qid, q in self.quests.items():
             if q["status"] == "active" and q["type"] in ("kill", "timed_kill"):
                 if q["target"] == enemy_type:
@@ -75,7 +79,7 @@ class QuestManager:
         self._update_hint()
 
     def on_player_move(self, player_wx, player_wy):
-        """玩家移动时检测探索任务区域"""
+        """Detect exploration quest zones on player movement."""
         discovered_names = []
         for qid, q in self.quests.items():
             if q["status"] == "active" and q["type"] == "explore":
@@ -94,7 +98,7 @@ class QuestManager:
         return discovered_names
 
     def on_escort_arrive(self, npc_wx, npc_wy):
-        """护送NPC到达目的地检测"""
+        """Detect escort NPC arrival at destination."""
         import math
         for qid, q in self.quests.items():
             if q["status"] == "active" and q["type"] == "escort":
@@ -111,7 +115,7 @@ class QuestManager:
         return None
 
     def update_timers(self):
-        """每帧更新限时任务计时器，返回刚刚失败的任务列表"""
+        """Update timed quest timers each frame; return list of just-failed quests."""
         failed = []
         for qid, q in self.quests.items():
             if q["status"] == "active" and q["type"] == "timed_kill":
@@ -120,17 +124,20 @@ class QuestManager:
                     if q["_timer"] <= 0:
                         q["status"] = "failed"
                         failed.append((qid, q))
+                        log.warning("Quest failed (timeout): %s (%s)",
+                                    qid, q.get("name", ""))
         if failed:
             self._update_hint()
         return failed
 
     def complete_quest(self, quest_id, game):
-        """完成任务，发放奖励"""
+        """Complete a quest and grant rewards."""
         quest = self.quests.get(quest_id)
         if not quest or quest["status"] != "completable":
             return False
 
         quest["status"] = "completed"
+        log.info("Quest completed: %s (%s)", quest_id, quest.get("name", ""))
         rewards = quest.get("rewards", {})
 
         player = game.entities.player
@@ -149,7 +156,7 @@ class QuestManager:
         return True
 
     def get_active_quests(self):
-        """获取所有进行中的任务"""
+        """Get all active quests."""
         return [(qid, q) for qid, q in self.quests.items()
                 if q["status"] in ("active", "completable")]
 
@@ -157,7 +164,7 @@ class QuestManager:
         return list(self.quests.items())
 
     def _update_hint(self):
-        """更新HUD任务提示"""
+        """Update HUD quest hint."""
         for qid, q in self.quests.items():
             if q["status"] == "active":
                 if q["type"] == "timed_kill":

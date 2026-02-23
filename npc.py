@@ -1,5 +1,5 @@
 # ============================================================
-#  NPC：对话/商店/任务触发 + 气泡对话 + follow行为
+#  NPC: dialogue/shop/quest triggers + speech bubble + follow behavior
 # ============================================================
 import math
 import random as rnd
@@ -24,38 +24,38 @@ class NPC(Entity):
         self.color = color or COLOR_NPC
         self.sprites = load_entity_sprites(f"npcs/{self.name.lower()}")
 
-        # 头顶图标
-        self._icon = ""           # 当前显示的图标
-        self._icon_bob = 0        # 浮动动画计数器
+        # Overhead icon
+        self._icon = ""           # Currently displayed icon
+        self._icon_bob = 0        # Floating animation counter
 
-        # 行为系统
+        # Behavior system
         self.behavior = behavior  # "idle", "patrol", "wander", "follow"
-        self._saved_behavior = behavior  # 保存原始行为（follow结束后恢复）
+        self._saved_behavior = behavior  # Save original behavior (restored after follow ends)
         self.home_wx = float(wx)
         self.home_wy = float(wy)
         self.patrol_points = patrol_points or []
         self._patrol_index = 0
         self.wander_radius = wander_radius
         self._move_target = None   # (tx, ty)
-        self._move_speed = 0.01    # NPC移动较慢
-        self._follow_speed = 0.025  # follow模式移动更快
-        self._wait_timer = 0       # 到达目标后等待帧数
+        self._move_speed = 0.01    # NPC moves slowly
+        self._follow_speed = 0.025  # Follow mode moves faster
+        self._wait_timer = 0       # Wait frames after reaching target
         self._moving = False
 
-        # 气泡对话
+        # Speech bubble
         self.idle_lines = idle_lines or []
         self._bubble_text = ""
-        self._bubble_timer = 0     # 剩余显示帧数
-        self._bubble_cooldown = 0  # 冷却帧数，防止频繁触发
+        self._bubble_timer = 0     # Remaining display frames
+        self._bubble_cooldown = 0  # Cooldown frames to prevent frequent triggers
 
     def update(self, game):
-        """更新NPC状态：图标 + 移动行为 + 气泡"""
+        """Update NPC state: icon + movement + bubble."""
         self._icon_bob += 1
         self._update_icon(game)
         self._update_movement(game)
         self._update_bubble(game)
 
-        # follow行为下的护送到达检测
+        # Escort arrival detection in follow behavior
         if self.behavior == "follow" and game.quest_manager:
             arrived_qid = game.quest_manager.on_escort_arrive(self.wx, self.wy)
             if arrived_qid:
@@ -66,22 +66,22 @@ class NPC(Entity):
                     tf("npc_arrived_dest", name=self.name), "quest")
 
     def _update_icon(self, game):
-        """根据NPC类型和任务状态更新头顶图标"""
+        """Update overhead icon based on NPC type and quest status."""
         if self.npc_type == "shop":
             self._icon = "$"
         elif self.npc_type == "quest" and game.quest_manager:
-            # 检查任务状态
+            # Check quest status
             for qid in self.quest_ids:
                 quest = game.quest_manager.get_quest(qid)
                 if quest:
                     if quest["status"] == "available":
-                        self._icon = "!"   # 有新任务
+                        self._icon = "!"   # New quest available
                         return
                     elif quest["status"] == "completable":
-                        self._icon = "?"   # 可交任务
+                        self._icon = "?"   # Quest ready to complete
                         return
                     elif quest["status"] == "active":
-                        self._icon = "..."  # 进行中
+                        self._icon = "..."  # In progress
                         return
             self._icon = ""
         elif self.npc_type == "talk":
@@ -90,14 +90,14 @@ class NPC(Entity):
             self._icon = ""
 
     def _update_bubble(self, game):
-        """更新气泡对话"""
+        """Update speech bubble."""
         if self._bubble_timer > 0:
             self._bubble_timer -= 1
         if self._bubble_cooldown > 0:
             self._bubble_cooldown -= 1
             return
 
-        # 检测玩家是否靠近
+        # Check if player is nearby
         player = game.entities.player
         if not player or not self.idle_lines:
             return
@@ -106,13 +106,13 @@ class NPC(Entity):
         dist = math.sqrt(dx * dx + dy * dy)
 
         if dist < 4.0 and self._bubble_timer <= 0 and self._bubble_cooldown <= 0:
-            if rnd.random() < 0.005:  # ~0.5%每帧，平均3秒触发一次
+            if rnd.random() < 0.005:  # ~0.5% per frame, triggers on average every 3 seconds
                 self._bubble_text = rnd.choice(self.idle_lines)
-                self._bubble_timer = 180  # 3秒显示
-                self._bubble_cooldown = 300  # 5秒冷却
+                self._bubble_timer = 180  # 3 seconds display
+                self._bubble_cooldown = 300  # 5 seconds cooldown
 
     def _update_movement(self, game):
-        """NPC移动行为"""
+        """NPC movement behavior."""
         if self.behavior == "idle":
             self._moving = False
             return
@@ -121,13 +121,13 @@ class NPC(Entity):
             self._update_follow(game)
             return
 
-        # 等待计时
+        # Wait timer
         if self._wait_timer > 0:
             self._wait_timer -= 1
             self._moving = False
             return
 
-        # 需要新目标
+        # Need new target
         if self._move_target is None:
             if self.behavior == "patrol" and self.patrol_points:
                 self._move_target = self.patrol_points[self._patrol_index]
@@ -144,20 +144,20 @@ class NPC(Entity):
                 self._moving = False
                 return
 
-        # 向目标移动
+        # Move toward target
         tx, ty = self._move_target
         dx = tx - self.wx
         dy = ty - self.wy
         dist = math.sqrt(dx * dx + dy * dy)
 
         if dist < 0.1:
-            # 到达目标
+            # Reached target
             self._move_target = None
-            self._wait_timer = rnd.randint(60, 180)  # 等1-3秒
+            self._wait_timer = rnd.randint(60, 180)  # Wait 1-3 seconds
             self._moving = False
             return
 
-        # 归一化并移动
+        # Normalize and move
         dx /= dist
         dy /= dist
         new_wx = self.wx + dx * self._move_speed
@@ -168,13 +168,13 @@ class NPC(Entity):
             self.wy = new_wy
             self._moving = True
         else:
-            # 碰到障碍，放弃当前目标
+            # Hit obstacle, abandon current target
             self._move_target = None
             self._wait_timer = rnd.randint(30, 90)
             self._moving = False
 
     def _update_follow(self, game):
-        """跟随玩家移动"""
+        """Follow player movement."""
         player = game.entities.player
         if not player:
             self._moving = False
@@ -184,12 +184,12 @@ class NPC(Entity):
         dy = player.wy - self.wy
         dist = math.sqrt(dx * dx + dy * dy)
 
-        # 保持一定距离跟随
+        # Follow at a certain distance
         if dist < 1.5:
             self._moving = False
             return
         if dist > 15.0:
-            # 太远了，瞬移到玩家附近
+            # Too far, teleport near player
             self.wx = player.wx - 1.0
             self.wy = player.wy - 1.0
             self._moving = False
@@ -208,19 +208,19 @@ class NPC(Entity):
             self._moving = False
 
     def start_follow(self):
-        """开始跟随玩家"""
+        """Start following player."""
         self._saved_behavior = self.behavior
         self.behavior = "follow"
 
     def interact(self, game):
-        """与NPC交互"""
+        """Interact with NPC."""
         if self.npc_type == "shop":
             if self.shop_id and game.shop_manager:
                 game.ui.open_shop(self.shop_id)
             elif self.dialogue_id:
                 game.ui.open_dialogue(self.dialogue_id, self.name)
         elif self.npc_type == "quest":
-            # 检查是否有可接取/完成的任务
+            # Check for available/completable quests
             handled = False
             if game.quest_manager:
                 for qid in self.quest_ids:
@@ -228,7 +228,7 @@ class NPC(Entity):
                     if quest:
                         if quest["status"] == "available":
                             game.quest_manager.accept_quest(qid)
-                            # 护送任务：接受后NPC开始跟随
+                            # Escort quest: NPC starts following after accepting
                             if quest["type"] == "escort":
                                 self.start_follow()
                             game.ui.open_dialogue(
@@ -274,24 +274,24 @@ class NPC(Entity):
             self._draw_color_body(surface, sx, sy)
 
     def draw_labels(self, surface, camera):
-        """在屏幕层绘制名字、图标、气泡（避免缩放模糊）"""
+        """Draw name, icon, bubble on screen layer (avoid scaling blur)."""
         from settings import PIXEL_SCALE
         from utils import get_font, FONT_UI_SM
 
         sx, sy = camera.world_to_cam(self.wx, self.wy)
-        # 将canvas坐标转换为屏幕坐标
+        # Convert canvas coordinates to screen coordinates
         scr_x = sx * PIXEL_SCALE
         name_top_y = getattr(self, '_canvas_top_y', sy - 22) * PIXEL_SCALE
 
         font = get_font(FONT_UI_SM)
 
-        # 名字
+        # Name
         name_surf = font.render(self.name, False, (255, 255, 200))
         surface.blit(name_surf,
                      (int(scr_x) - name_surf.get_width() // 2,
                       int(name_top_y)))
 
-        # 头顶图标（浮动效果）
+        # Overhead icon (floating effect)
         if self._icon:
             bob = math.sin(self._icon_bob * 0.05) * 6
             icon_y = name_top_y - 28 + bob
@@ -308,16 +308,16 @@ class NPC(Entity):
                          (int(scr_x) - icon_surf.get_width() // 2,
                           int(icon_y)))
 
-        # 气泡对话
+        # Speech bubble
         if self._bubble_timer > 0 and self._bubble_text:
             self._draw_bubble(surface, scr_x, name_top_y - 30)
 
     def _draw_bubble(self, surface, sx, base_y):
-        """绘制NPC头顶气泡对话（屏幕分辨率）"""
+        """Draw NPC overhead speech bubble (screen resolution)."""
         from utils import get_font, FONT_UI_SM
         font = get_font(FONT_UI_SM)
 
-        # 自动换行
+        # Auto word-wrap
         max_chars = 18
         text = self._bubble_text
         lines = []
@@ -344,26 +344,26 @@ class NPC(Entity):
         bx = int(sx) - bw // 2
         by = int(base_y) - bh - 8
 
-        # 淡出效果
+        # Fade-out effect
         alpha = 255
         if self._bubble_timer < 30:
             alpha = int(255 * self._bubble_timer / 30)
 
-        # 气泡背景
+        # Bubble background
         bubble_surf = pygame.Surface((bw, bh + 8), pygame.SRCALPHA)
         bubble_surf.fill((255, 250, 230, min(alpha, 220)))
-        # 小三角尾巴
+        # Small triangle tail
         tri_x = bw // 2
         pygame.draw.polygon(bubble_surf, (255, 250, 230, min(alpha, 220)),
                             [(tri_x - 5, bh), (tri_x + 5, bh), (tri_x, bh + 8)])
-        # 边框
+        # Border
         pygame.draw.rect(bubble_surf, (180, 160, 120, alpha),
                          (0, 0, bw, bh), 1)
 
         bubble_surf.set_alpha(alpha)
         surface.blit(bubble_surf, (bx, by))
 
-        # 文本
+        # Text
         for i, surf in enumerate(rendered):
             surf.set_alpha(alpha)
             surface.blit(surf, (bx + pad_x, by + pad_y + i * line_h))

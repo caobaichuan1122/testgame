@@ -1,5 +1,5 @@
 # ============================================================
-#  HUD：血条/蓝条/等级/金币/战斗模式/任务提示（屏幕分辨率）
+#  HUD: HP/MP bars, level, gold, combat mode, quest hints (screen resolution)
 # ============================================================
 import pygame
 from settings import (
@@ -19,42 +19,42 @@ class HUD:
         font_sm = get_font(FONT_UI_SM)
         stats = player.stats
 
-        # HP条
+        # HP bar
         draw_bar(surface, ui(4), ui(3), ui(50), ui(6),
                  stats.hp / stats.max_hp, COLOR_HP)
         draw_text(surface, f"HP {stats.hp}/{stats.max_hp}",
                   ui(56), ui(3), font_sm, COLOR_UI)
 
-        # MP条
+        # MP bar
         draw_bar(surface, ui(4), ui(11), ui(50), ui(6),
                  stats.mp / stats.max_mp, COLOR_MP)
         draw_text(surface, f"MP {stats.mp}/{stats.max_mp}",
                   ui(56), ui(11), font_sm, COLOR_UI)
 
-        # 等级
+        # Level
         draw_text(surface, f"Lv{stats.level}", ui(120), ui(3), font, COLOR_UI)
 
-        # 经验条
+        # XP bar
         xp_ratio = stats.xp / stats.xp_needed() if stats.xp_needed() > 0 else 0
         draw_bar(surface, ui(120), ui(13), ui(40), ui(4), xp_ratio, (50, 200, 100))
 
-        # 金币
+        # Gold
         draw_text(surface, f"G:{player.inventory.gold}",
                   ui(170), ui(3), font, COLOR_GOLD)
 
-        # 属性点提示
+        # Free attribute points hint
         if stats.free_points > 0:
             draw_text(surface, f"+{stats.free_points}pts",
                       ui(170), ui(13), font_sm, COLOR_ACCENT)
 
-        # --- 底部 ---
+        # --- Bottom ---
         bottom_y = SCREEN_HEIGHT - ui(12)
 
-        # 任务提示（左下）
+        # Quest hint (bottom-left)
         if quest_hint:
             draw_text(surface, quest_hint, ui(4), bottom_y, font_sm, COLOR_UI)
 
-        # 交互提示
+        # Interaction hint
         if player.interact_target:
             hint = tf("talk_to", name=player.interact_target.name)
             tw, _ = draw_text(surface, hint, -9999, 0, font_sm)

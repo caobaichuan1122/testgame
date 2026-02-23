@@ -1,5 +1,5 @@
 # ============================================================
-#  背包/装备界面（屏幕分辨率）
+#  Inventory/equipment UI (screen resolution)
 # ============================================================
 import pygame
 from settings import (
@@ -32,12 +32,12 @@ class InventoryUI:
         font = get_font(FONT_UI_MD)
         font_sm = get_font(FONT_UI_SM)
 
-        # 覆盖层
+        # Overlay
         overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 140))
         surface.blit(overlay, (0, 0))
 
-        # 面板
+        # Panel
         pw, ph = ui(INV_WIDTH), ui(INV_HEIGHT)
         px = (SCREEN_WIDTH - pw) // 2
         py = (SCREEN_HEIGHT - ph) // 2
@@ -78,7 +78,7 @@ class InventoryUI:
                 draw_text(surface, f"{prefix}{name}{count}",
                           ix, iy + (i - start) * line_h, font_sm, color)
 
-        # 右侧装备槽
+        # Right side: equipment slots
         ex = px + pw // 2 + ui(10)
         ey = py + ui(18)
         draw_text(surface, t("equipped_label"), ex, ey, font_sm, COLOR_UI)
@@ -90,7 +90,7 @@ class InventoryUI:
             draw_text(surface, f"{t(slot_keys[slot_name])}: {name}", ex, ey, font_sm, COLOR_UI)
             ey += line_h
 
-        # 选中物品描述
+        # Selected item description
         if inv.items and 0 <= self.selected < len(inv.items):
             slot = inv.items[self.selected]
             desc = get_item_desc(slot["id"])

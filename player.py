@@ -1,5 +1,5 @@
 # ============================================================
-#  玩家角色：8方向移动、三种战斗、属性、背包
+#  Player character: 8-directional movement, three combat modes, stats, inventory
 # ============================================================
 import math
 import pygame
@@ -12,7 +12,7 @@ from sprite_manager import load_entity_sprites
 from i18n import t, tf, get_item_name
 
 
-# 8方向移动映射（WASD → 世界坐标偏移）
+# 8-direction movement mapping (WASD → world coordinate offsets)
 DIR_MAP = {
     "W": (-1, -1),
     "S": (1, 1),
@@ -28,32 +28,32 @@ class Player(Entity):
         self.inventory = Inventory()
         self.inventory.gold = 50
 
-        # 朝向（战斗动画可能用到）
+        # Facing direction (may be used for combat animations)
         self.facing_angle = 0.0
         self.facing_dx = 1.0
         self.facing_dy = 0.0
 
-        # 移动
-        self.speed = PLAYER_SPEED / 60.0  # 转换为每帧移动量
+        # Movement
+        self.speed = PLAYER_SPEED / 60.0  # Convert to per-frame movement
 
-        # 交互
-        self.interact_target = None  # 附近可交互的NPC
+        # Interaction
+        self.interact_target = None  # Nearby interactable NPC
 
-        # 消息提示
+        # Message display
         self.messages = []  # [(text, timer), ...]
 
-        # 精灵
+        # Sprites
         self.sprites = load_entity_sprites("player")  # None if no assets
         self.moving = False
 
     def update(self, game):
-        # 消息计时
+        # Message timer
         self.messages = [(t, c - 1) for t, c in self.messages if c > 1]
 
         self._handle_movement(game)
         self._check_interact(game)
 
-        # 探索任务检测
+        # Exploration quest detection
         if game.quest_manager:
             discovered = game.quest_manager.on_player_move(self.wx, self.wy)
             for name in discovered:
@@ -65,7 +65,7 @@ class Player(Entity):
             state = "walk" if self.moving else "idle"
             self.sprites.update(state)
 
-        # 应用装备防御加成到 stats
+        # Apply equipment defense bonus to stats
         self.stats.def_ = max(self.stats.def_,
                               3 + self.inventory.get_total_defense())
 
@@ -96,7 +96,7 @@ class Player(Entity):
             new_wx = self.wx + dx * self.speed
             new_wy = self.wy + dy * self.speed
 
-            # 碰撞检测：分轴
+            # Collision detection: per-axis
             if game.iso_map.is_walkable(new_wx, self.wy):
                 self.wx = new_wx
             if game.iso_map.is_walkable(self.wx, new_wy):
@@ -105,20 +105,20 @@ class Player(Entity):
             self.moving = False
 
     def _check_interact(self, game):
-        """检查附近是否有可交互NPC"""
+        """Check for nearby interactable NPC."""
         self.interact_target = game.entities.get_nearest_npc(
             self.wx, self.wy, 3.0
         )
 
     def handle_keydown(self, key, game):
-        """处理按键事件"""
-        # 交互
+        """Handle key events."""
+        # Interact
         if key == pygame.K_e:
             if self.interact_target:
                 self.interact_target.interact(game)
 
     def _on_enemy_kill(self, enemy, game):
-        """敌人被击杀时的回调"""
+        """Callback when an enemy is killed."""
         xp = enemy.xp_reward
         gold = enemy.gold_reward
         leveled = self.stats.add_xp(xp)
@@ -127,21 +127,21 @@ class Player(Entity):
         if leveled:
             self.add_message(tf("level_up", level=self.stats.level))
 
-        # 通知任务系统
+        # Notify quest system
         if game.quest_manager:
             game.quest_manager.on_enemy_kill(enemy.enemy_type)
 
-        # 掉落物品
+        # Drop items
         for item_id in enemy.drops:
             self.inventory.add_item(item_id)
             name = get_item_name(item_id)
             self.add_message(tf("got_item", name=name))
-            # 通知收集任务
+            # Notify collect quest
             if game.quest_manager:
                 game.quest_manager.on_collect(item_id)
 
     def on_projectile_hit(self, enemy, damage, game):
-        """投射物击中敌人的回调"""
+        """Callback when a projectile hits an enemy."""
         from combat import check_crit
         is_crit = check_crit(self.stats.dex)
         if is_crit:
@@ -166,7 +166,7 @@ class Player(Entity):
                 ax, ay = self.sprites.anchor
                 surface.blit(frame, (int(sx) - ax, int(sy) - ay))
         else:
-            # 玩家主体（菱形方块）
+            # Player body (diamond block)
             body_w, body_h = 6, 4
             points = [
                 (sx, sy - 8),
@@ -176,11 +176,11 @@ class Player(Entity):
             ]
             pygame.draw.polygon(surface, PLAYER_COLOR, points)
 
-            # 头部
+            # Head
             pygame.draw.circle(surface, (100, 200, 255), (int(sx), int(sy) - 12), 3)
 
     def draw_labels(self, surface, camera):
-        """在屏幕层绘制浮动消息（避免缩放模糊）"""
+        """Draw floating messages on screen layer (avoid scaling blur)."""
         from utils import get_font, FONT_UI_SM
         from settings import PIXEL_SCALE
 
@@ -194,4 +194,3 @@ class Player(Entity):
             surface.blit(msg_surf,
                          (int(scr_x) - msg_surf.get_width() // 2,
                           int(scr_y) - 66 - i * 28))
-

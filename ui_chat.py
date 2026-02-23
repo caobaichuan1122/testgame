@@ -1,5 +1,5 @@
 # ============================================================
-#  消息日志UI：紧凑模式（左下角） + 展开模式（可滚动面板）
+#  Message log UI: compact mode (bottom-left) + expanded mode (scrollable panel)
 # ============================================================
 import pygame
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT, CHAT_LOG_MAX_DISPLAY, CHAT_LOG_FADE_TICKS
@@ -11,7 +11,7 @@ from utils import get_font, ui, FONT_UI_SM
 class ChatUI:
     def __init__(self):
         self.expanded = False
-        self.scroll_offset = 0  # 展开模式滚动偏移（从底部往上）
+        self.scroll_offset = 0  # Scroll offset in expanded mode (from bottom)
 
     def toggle(self):
         self.expanded = not self.expanded
@@ -22,7 +22,7 @@ class ChatUI:
         self.scroll_offset = 0
 
     def handle_key(self, key, chat_log):
-        """展开模式下处理滚动，返回True表示已消费按键"""
+        """Handle scroll keys in expanded mode; return True if key was consumed."""
         if not self.expanded:
             return False
         if key == pygame.K_UP or key == pygame.K_w:
@@ -44,7 +44,7 @@ class ChatUI:
             self._draw_compact(surface, chat_log)
 
     def _draw_compact(self, surface, chat_log):
-        """紧凑模式：左下角显示最近5条消息，新消息不透明→旧消息淡出"""
+        """Compact mode: show last 5 messages in bottom-left; new=opaque, old=fade."""
         recent = chat_log.get_recent(5)
         if not recent:
             return
@@ -70,7 +70,7 @@ class ChatUI:
             surface.blit(text_surf, (ui(4), y))
 
     def _draw_expanded(self, surface, chat_log):
-        """展开模式：半透明面板，可滚动浏览全部日志"""
+        """Expanded mode: semi-transparent panel, scrollable full log."""
         font = get_font(FONT_UI_SM)
         line_h = ui(6)
         panel_w = ui(120)
@@ -78,23 +78,23 @@ class ChatUI:
         panel_x = ui(2)
         panel_y = ui(15)
 
-        # 半透明背景
+        # Semi-transparent background
         panel = pygame.Surface((panel_w, panel_h), pygame.SRCALPHA)
         panel.fill((0, 0, 0, 200))
         surface.blit(panel, (panel_x, panel_y))
         pygame.draw.rect(surface, (80, 80, 100),
                          (panel_x, panel_y, panel_w, panel_h), 1)
 
-        # 标题
+        # Title
         title_font = get_font(FONT_UI_SM + 4)
         title_surf = title_font.render(t("message_log"), False, (230, 230, 230))
         surface.blit(title_surf, (panel_x + ui(2), panel_y + ui(1)))
 
-        # 提示
+        # Hint
         hint_surf = font.render(t("chat_close_hint"), False, (140, 140, 140))
         surface.blit(hint_surf, (panel_x + ui(2), panel_y + ui(5)))
 
-        # 消息区域
+        # Message area
         msg_area_y = panel_y + ui(9)
         msg_area_h = panel_h - ui(11)
         visible_lines = msg_area_h // line_h

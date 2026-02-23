@@ -1,8 +1,9 @@
 # ============================================================
-#  消息日志：持久化的游戏消息记录（战斗/拾取/任务/系统/对话）
+#  Message log: persistent game message history
+#  (combat / loot / quest / system / dialogue)
 # ============================================================
 
-# 消息分类颜色
+# Message category colors
 CATEGORY_COLORS = {
     "combat":   (220, 80, 80),
     "loot":     (255, 215, 0),

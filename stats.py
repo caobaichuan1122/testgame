@@ -1,11 +1,11 @@
 # ============================================================
-#  RPG属性系统：等级、经验、属性点
+#  RPG stat system: level, XP, and attribute points
 # ============================================================
 import math
 
 
 class Stats:
-    """RPG属性：STR/DEX/INT/DEF + 等级/经验"""
+    """RPG stats: STR/DEX/INT/DEF + level/XP."""
 
     def __init__(self, hp=50, mp=30, str_=3, dex=3, int_=3, def_=2, level=1):
         self.max_hp = hp
@@ -13,21 +13,21 @@ class Stats:
         self.max_mp = mp
         self.mp = mp
 
-        self.str = str_      # 力量 → 近战加成
-        self.dex = dex       # 敏捷 → 远程加成
-        self.int = int_      # 智力 → 魔法加成
-        self.def_ = def_     # 防御 → 减伤
+        self.str = str_      # Strength -> melee bonus
+        self.dex = dex       # Dexterity -> ranged bonus
+        self.int = int_      # Intelligence -> magic bonus
+        self.def_ = def_     # Defense -> damage reduction
 
         self.level = level
         self.xp = 0
         self.free_points = 0
 
     def xp_needed(self):
-        """当前等级升级所需经验"""
+        """XP required to reach the next level."""
         return int(100 * (1.5 ** (self.level - 1)))
 
     def add_xp(self, amount):
-        """添加经验值，自动升级"""
+        """Add XP and auto-level up as needed."""
         self.xp += amount
         leveled = False
         while self.xp >= self.xp_needed():
@@ -42,7 +42,7 @@ class Stats:
         return leveled
 
     def assign_point(self, stat_name):
-        """分配自由属性点"""
+        """Assign a free stat point."""
         if self.free_points <= 0:
             return False
         if stat_name == "str":
@@ -59,7 +59,7 @@ class Stats:
         return True
 
     def take_damage(self, raw_damage):
-        """受到伤害，返回实际伤害值"""
+        """Take damage; return actual damage dealt."""
         actual = max(1, raw_damage - int(self.def_ * 0.8))
         self.hp = max(0, self.hp - actual)
         return actual

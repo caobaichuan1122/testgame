@@ -1,5 +1,5 @@
 # ============================================================
-#  回合制战斗场景管理器
+#  Turn-based combat scene manager
 # ============================================================
 import random
 import pygame
@@ -15,22 +15,22 @@ from i18n import t, tf, get_item_name
 from utils import draw_bar, draw_text, get_font, ui, FONT_UI_SM, FONT_UI_MD, FONT_UI_LG
 
 
-# --- 战斗阶段 ---
-PHASE_INTRO = "intro"            # 战斗开始动画
-PHASE_PLAYER_CHOOSE = "player_choose"  # 玩家选择行动
-PHASE_PLAYER_ACT = "player_act"  # 玩家行动动画
-PHASE_ENEMY_ACT = "enemy_act"    # 敌人行动动画
-PHASE_CHECK_END = "check_end"    # 检查胜负
-PHASE_WIN = "win"                # 胜利
-PHASE_LOSE = "lose"              # 失败
-PHASE_FLEE = "flee"              # 逃跑成功
+# --- Combat phases ---
+PHASE_INTRO = "intro"            # Combat start animation
+PHASE_PLAYER_CHOOSE = "player_choose"  # Player chooses action
+PHASE_PLAYER_ACT = "player_act"  # Player action animation
+PHASE_ENEMY_ACT = "enemy_act"    # Enemy action animation
+PHASE_CHECK_END = "check_end"    # Check win/loss
+PHASE_WIN = "win"                # Victory
+PHASE_LOSE = "lose"              # Defeat
+PHASE_FLEE = "flee"              # Flee success
 
-# --- 菜单层级 ---
+# --- Menu levels ---
 MENU_MAIN = "main"
 MENU_SKILL = "skill"
 MENU_ITEM = "item"
 
-# 内部选项ID（不翻译）
+# Internal option IDs (not translated)
 MAIN_OPT_IDS = ["Attack", "Defend", "Skill", "Item", "Flee"]
 MAIN_OPT_KEYS = ["opt_attack", "opt_defend", "opt_skill", "opt_item", "opt_flee"]
 
@@ -51,27 +51,27 @@ class CombatScene:
         self.enemy = None
         self.game = None
 
-        # 回合
+        # Round
         self.round_num = 0
         self.phase = PHASE_INTRO
         self.phase_timer = 0
 
-        # 菜单
+        # Menu
         self.menu_level = MENU_MAIN
         self.cursor = 0
-        self.item_list = []   # 当前可用消耗品列表
+        self.item_list = []   # Currently available consumable list
         self.item_cursor = 0
 
-        # 战斗日志
+        # Combat log
         self.log = []  # [(text, color), ...]
 
-        # 动画
+        # Animation
         self.anim_timer = 0
         self.player_flash = 0
         self.enemy_flash = 0
         self.player_defending = False
 
-        # 结果
+        # Results
         self.combat_finished = False
         self.result = None  # "win", "lose", "flee"
 
@@ -186,7 +186,7 @@ class CombatScene:
                     "data": item_data,
                 })
 
-    # ---- 玩家行动 ----
+    # ---- Player actions ----
 
     def _do_player_attack(self):
         dmg, is_crit = self._calc_player_damage(COMBAT_MELEE)
@@ -292,7 +292,7 @@ class CombatScene:
             base = MAGIC_BASE_DMG
             stat_bonus = p.stats.int * 2
 
-        # 装备属性加成
+        # Equipment stat bonus
         stat_bonus += p.inventory.get_stat_bonus("str" if mode == COMBAT_MELEE
                                                   else "dex" if mode == COMBAT_RANGED
                                                   else "int") * 2
@@ -303,7 +303,7 @@ class CombatScene:
             dmg = int(dmg * 1.5)
         return dmg, is_crit
 
-    # ---- 敌人AI ----
+    # ---- Enemy AI ----
 
     def _enemy_act(self):
         e = self.enemy
@@ -329,7 +329,7 @@ class CombatScene:
     def _enemy_name(self):
         return getattr(self.enemy, 'enemy_type', 'enemy').replace('_', ' ').title()
 
-    # ---- 更新 ----
+    # ---- Update ----
 
     def update(self):
         if not self.active:
@@ -392,7 +392,7 @@ class CombatScene:
         gold = self.enemy.gold_reward
         self.log.append((tf("xp_gold_reward", xp=xp, gold=gold), COLOR_GOLD))
 
-    # ---- 绘制 ----
+    # ---- Draw ----
 
     def draw(self, screen):
         if not self.active:
@@ -433,7 +433,7 @@ class CombatScene:
         draw_text(screen, tf("round_num", n=self.round_num),
                   SCREEN_WIDTH - ui(30), ui(3), font_sm, (150, 150, 180))
 
-        # --- 敌人（上方） ---
+        # --- Enemy (upper) ---
         enemy_x = cx + ui(30)
         enemy_y = area_h // 4
 
@@ -469,7 +469,7 @@ class CombatScene:
         draw_text(screen, f"HP {self.enemy.stats.hp}/{self.enemy.stats.max_hp}",
                   enemy_x, bar_y + ui(6), font_sm, COLOR_UI, center=True)
 
-        # --- 玩家（下方） ---
+        # --- Player (lower) ---
         player_x = cx - ui(30)
         player_y = area_h * 3 // 4 - ui(10)
 
@@ -553,7 +553,7 @@ class CombatScene:
                     draw_text(screen, f"{prefix}{item['name']} x{item['count']}",
                               menu_x, y, font, color)
 
-        # 右侧：最近日志
+        # Right side: recent log
         log_x = SCREEN_WIDTH // 2 + ui(10)
         log_y = panel_y + ui(3)
         draw_text(screen, t("battle_log"), log_x, log_y, font_sm, (150, 150, 180))

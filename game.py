@@ -1,5 +1,5 @@
 # ============================================================
-#  Game 核心：状态管理、主循环 — 等距RPG版
+#  Game core: state management, main loop — isometric RPG
 # ============================================================
 import pygame
 from settings import (
@@ -14,6 +14,9 @@ from ui_manager import UIManager
 from chat_log import ChatLog
 from combat_scene import CombatScene
 from i18n import t, tf, switch_language
+from logger import get_logger
+
+log = get_logger("game")
 
 
 class Game:
@@ -27,7 +30,7 @@ class Game:
         self.running = True
         self.state = STATE_MENU
 
-        # 子系统
+        # Subsystems
         self.iso_map = None
         self.camera = Camera()
         self.entities = EntityManager()
@@ -41,6 +44,7 @@ class Game:
 
     def load_level(self):
         from demo_level import build_demo_level
+        log.info("Loading demo level")
         data = build_demo_level()
 
         self.iso_map = data["iso_map"]
@@ -63,11 +67,14 @@ class Game:
 
         self.chat_log = ChatLog()
         self.chat_log.add(t("welcome_msg"), "system")
+        log.info("Level loaded: %d enemies, %d NPCs, player at (%s, %s)",
+                 len(data["enemies"]), len(data["npcs"]), px, py)
 
     def start_combat(self, enemy):
-        """触发回合制战斗"""
+        """Trigger turn-based combat."""
         if self.state == STATE_COMBAT:
             return
+        log.info("Combat started: player vs %s", enemy.enemy_type)
         self.state = STATE_COMBAT
         self.combat_scene.start(self.entities.player, enemy, self)
 
@@ -79,7 +86,7 @@ class Game:
                 self._handle_keydown(event.key)
             if event.type == pygame.TEXTINPUT:
                 if self.state == STATE_PLAYING:
-                    # IME可能拦截按键，只产生TEXTINPUT而非KEYDOWN
+                    # IME may intercept keystrokes and only emit TEXTINPUT, not KEYDOWN
                     if event.text.lower() == 'e' and not self.ui.has_overlay and not self.ui._chat_input_active:
                         if not (self.dialogue_manager and self.dialogue_manager.is_active):
                             if self.entities.player and self.entities.player.interact_target:
@@ -134,28 +141,31 @@ class Game:
                 enemy = self.combat_scene.enemy
                 self.combat_scene.active = False
                 if result == "win":
-                    # 敌人已死亡，标记不活跃
+                    # Enemy is dead, mark as inactive
                     enemy.active = False
                     self.state = STATE_PLAYING
+                    log.info("Combat won: defeated %s", enemy.enemy_type)
                 elif result == "flee":
-                    # 逃跑成功，给敌人设置冷却
-                    enemy.combat_cooldown = 180  # 3秒冷却
+                    # Flee success, set combat cooldown on enemy
+                    enemy.combat_cooldown = 180  # 3-second cooldown
                     enemy.ai_state = "idle"
                     enemy.ai_timer = 120
                     self.state = STATE_PLAYING
+                    log.info("Combat: player fled from %s", enemy.enemy_type)
                 elif result == "lose":
                     self.state = STATE_GAME_OVER
+                    log.info("Combat lost: player defeated by %s", enemy.enemy_type)
             return
 
         if self.state == STATE_PLAYING:
             self.chat_log.advance_tick()
-            # 推进打字机效果（即使有覆盖UI也需要更新）
+            # Advance typewriter effect (must update even with overlay UI)
             if self.dialogue_manager and self.dialogue_manager.is_active:
                 self.dialogue_manager.update_typewriter()
                 return
             if self.ui.has_overlay:
                 return
-            # 更新限时任务计时器
+            # Update timed quest timers
             if self.quest_manager:
                 failed = self.quest_manager.update_timers()
                 for qid, q in failed:
@@ -172,10 +182,11 @@ class Game:
                 )
                 if not self.entities.player.stats.alive:
                     self.state = STATE_GAME_OVER
+                    log.warning("Player died — game over")
 
     def draw(self):
         if self.state == STATE_MENU:
-            # 菜单直接画在 screen 上（全屏幕分辨率）
+            # Menu drawn directly on screen (full screen resolution)
             self.screen.fill(COLOR_BG)
             self.ui.menu_ui.draw_main_menu(self.screen)
 
@@ -199,7 +210,7 @@ class Game:
         pygame.display.flip()
 
     def _draw_world(self):
-        """绘制游戏世界到 canvas，然后缩放到 screen（像素风）"""
+        """Draw game world to canvas, then scale to screen (pixel art)."""
         self.canvas.fill(COLOR_BG)
         if self.iso_map:
             self.iso_map.draw(self.canvas, self.camera)
@@ -207,13 +218,15 @@ class Game:
         scaled = pygame.transform.scale(self.canvas,
                                         (SCREEN_WIDTH, SCREEN_HEIGHT))
         self.screen.blit(scaled, (0, 0))
-        # 在屏幕层绘制文字标签（避免缩放模糊）
+        # Draw text labels on screen layer (avoid scaling blur)
         self.entities.draw_labels(self.screen, self.camera)
 
     def run(self):
+        log.info("Main loop started")
         while self.running:
             self.handle_events()
             self.update()
             self.draw()
             self.clock.tick(FPS)
         pygame.quit()
+        log.info("Main loop ended")

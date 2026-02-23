@@ -1,11 +1,11 @@
-"""自动运行游戏几帧并截图保存"""
+"""Auto-run the game for a few frames and save screenshots."""
 import pygame
 from game import Game
 from settings import STATE_PLAYING, STATE_MENU
 
 game = Game()
 
-# 截图1: 菜单界面
+# Screenshot 1: menu screen
 for _ in range(5):
     game.handle_events()
     game.update()
@@ -15,14 +15,14 @@ for _ in range(5):
 pygame.image.save(game.screen, "screenshot_menu.png")
 print("Menu screenshot saved.")
 
-# 切换到游戏状态
+# Switch to playing state
 game.state = STATE_PLAYING
 game.load_level()
 
-# 模拟玩家右移+跳跃几帧
+# Simulate player moving right and jumping
 for i in range(40):
     game.handle_events()
-    # 模拟按键
+    # Simulate key presses
     if i < 20:
         game.player.vel_x = 2
     if i == 10:

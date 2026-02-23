@@ -1,5 +1,5 @@
 # ============================================================
-#  敌人：AI状态机（idle/wander/chase/attack）
+#  Enemy: AI state machine (idle/wander/chase/attack)
 # ============================================================
 import math
 import random
@@ -10,7 +10,7 @@ from utils import distance, normalize
 from sprite_manager import load_entity_sprites
 
 
-# AI状态
+# AI states
 AI_IDLE = "idle"
 AI_WANDER = "wander"
 AI_CHASE = "chase"
@@ -24,7 +24,7 @@ class Enemy(Entity):
         self.spawn_wx = wx
         self.spawn_wy = wy
 
-        # 默认属性，可通过 kwargs 覆盖
+        # Default attributes, can be overridden via kwargs
         defaults = ENEMY_TEMPLATES.get(enemy_type, ENEMY_TEMPLATES["orc"])
         for k, v in defaults.items():
             setattr(self, k, v)
@@ -44,9 +44,9 @@ class Enemy(Entity):
         self.wander_dy = 0.0
         self.attack_cooldown = 0
         self.hit_flash = 0
-        self.combat_cooldown = 0  # 战斗后冷却，避免立即再次触发
+        self.combat_cooldown = 0  # Post-combat cooldown to prevent immediate re-trigger
 
-        # 精灵
+        # Sprites
         self.sprites = load_entity_sprites(f"enemies/{self.enemy_type}")
 
     def update(self, game):
@@ -75,7 +75,7 @@ class Enemy(Entity):
             state = "walk" if self.ai_state in (AI_WANDER, AI_CHASE) else "idle"
             self.sprites.update(state)
 
-        # AI 状态机
+        # AI state machine
         if self.ai_state == AI_IDLE:
             self._ai_idle(dist_to_player)
         elif self.ai_state == AI_WANDER:
@@ -112,7 +112,7 @@ class Enemy(Entity):
         new_wx = self.wx + self.wander_dx * speed
         new_wy = self.wy + self.wander_dy * speed
 
-        # 不要离出生点太远
+        # Don't wander too far from spawn point
         if distance(new_wx, new_wy, self.spawn_wx, self.spawn_wy) > self.wander_range:
             self.ai_state = AI_IDLE
             self.ai_timer = random.randint(30, 60)
@@ -128,14 +128,14 @@ class Enemy(Entity):
             self.ai_timer = random.randint(30, 60)
             return
 
-        # 进入攻击范围时触发回合制战斗
+        # Trigger turn-based combat when within attack range
         if dist_to_player < self.attack_range and self.combat_cooldown <= 0:
             from settings import STATE_COMBAT
             if game.state != STATE_COMBAT:
                 game.start_combat(self)
             return
 
-        # 朝玩家移动
+        # Move toward player
         dx = player.wx - self.wx
         dy = player.wy - self.wy
         dx, dy = normalize(dx, dy)
@@ -150,7 +150,7 @@ class Enemy(Entity):
             self.wy = new_wy
 
     def _ai_attack(self, game, player, dist_to_player):
-        # 回合制战斗模式下，attack状态直接触发战斗
+        # In turn-based combat mode, attack state directly triggers combat
         if self.combat_cooldown <= 0:
             from settings import STATE_COMBAT
             if game.state != STATE_COMBAT:
@@ -165,7 +165,7 @@ class Enemy(Entity):
 
         sx, sy = camera.world_to_cam(self.wx, self.wy)
 
-        # 闪白效果
+        # White flash effect
         use_flash = self.hit_flash > 0
         color = (255, 255, 255) if use_flash else self.color
 
@@ -198,7 +198,7 @@ class Enemy(Entity):
                 drawn_with_sprite = True
 
         if not drawn_with_sprite:
-            # 身体（菱形）
+            # Body (diamond shape)
             w, h = self.draw_size
             points = [
                 (sx, sy - h * 2),
@@ -209,11 +209,11 @@ class Enemy(Entity):
             pygame.draw.polygon(surface, color, points)
             sprite_top_y = sy - h * 2
 
-            # Boss额外装饰
+            # Boss extra decoration
             if self.is_boss:
                 pygame.draw.polygon(surface, (255, 255, 100), points, 1)
 
-        # 血条
+        # HP bar
         if self.stats.alive and self.stats.hp < self.stats.max_hp:
             bar_w = 16
             bar_h = 2
@@ -228,7 +228,7 @@ class Enemy(Entity):
         self.hit_flash = 6
 
 
-# --- 敌人模板 ---
+# --- Enemy templates ---
 ENEMY_TEMPLATES = {
     "orc": {
         "max_hp": 25, "str_val": 2, "dex_val": 1, "int_val": 0, "def_val": 1,

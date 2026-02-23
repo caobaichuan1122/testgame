@@ -1,27 +1,27 @@
 # ============================================================
-#  对话树：节点、选项、条件分支
+#  Dialogue tree: nodes, options, conditional branches
 # ============================================================
 
 
 class DialogueManager:
-    """管理所有对话数据"""
+    """Manages all dialogue data."""
 
     def __init__(self):
-        self.dialogues = {}  # id → DialogueTree
+        self.dialogues = {}  # id -> DialogueTree
         self.active_dialogue = None
         self.active_node = None
         self.speaker_name = ""
-        # 打字机效果
+        # Typewriter effect
         self._full_text = ""
         self._display_text = ""
         self._char_index = 0
-        self._typewriter_speed = 2  # 每N帧显示一个字符
+        self._typewriter_speed = 2  # chars revealed per N ticks
         self._tick = 0
-        self._finished = False  # 当前文本是否打完
+        self._finished = False  # whether current text is fully revealed
 
     def register(self, dialogue_id, nodes):
-        """注册一棵对话树
-        nodes: dict of node_id → {
+        """Register a dialogue tree.
+        nodes: dict of node_id -> {
             "text": str,
             "options": [{"label": str, "next": node_id, "condition": fn, "callback": fn}],
         }
@@ -29,9 +29,9 @@ class DialogueManager:
         self.dialogues[dialogue_id] = nodes
 
     def start(self, dialogue_id, speaker=""):
-        """开始对话"""
+        """Start a dialogue."""
         if dialogue_id not in self.dialogues:
-            # 动态生成简单对话
+            # Generate a simple fallback dialogue
             self.dialogues[dialogue_id] = {
                 "start": {
                     "text": "...",
@@ -44,7 +44,7 @@ class DialogueManager:
         self._start_typewriter()
 
     def _start_typewriter(self):
-        """重置打字机状态"""
+        """Reset typewriter state."""
         if self.active_node:
             self._full_text = self.active_node.get("text", "")
         else:
@@ -55,7 +55,7 @@ class DialogueManager:
         self._finished = False
 
     def update_typewriter(self):
-        """每帧推进打字机效果"""
+        """Advance typewriter one frame."""
         if self._finished or not self.active_node:
             return
         self._tick += 1
@@ -68,7 +68,7 @@ class DialogueManager:
             self._display_text = self._full_text[:self._char_index]
 
     def skip_typewriter(self):
-        """跳过打字机，立即显示全部文本"""
+        """Skip typewriter, reveal full text immediately."""
         self._display_text = self._full_text
         self._char_index = len(self._full_text)
         self._finished = True
@@ -86,7 +86,7 @@ class DialogueManager:
         if not self.active_node:
             return []
         options = self.active_node.get("options", [])
-        # 过滤有条件的选项
+        # Filter options by condition
         result = []
         for opt in options:
             cond = opt.get("condition")
@@ -95,19 +95,19 @@ class DialogueManager:
         return result
 
     def select_option(self, index, game=None):
-        """选择选项，返回是否对话结束"""
+        """Select an option; return True if dialogue ended."""
         options = self.get_options()
         if index < 0 or index >= len(options):
             return True
 
         opt = options[index]
 
-        # 执行回调
+        # Execute callback
         callback = opt.get("callback")
         if callback and game:
             callback(game)
 
-        # 跳转到下一节点
+        # Jump to next node
         next_id = opt.get("next")
         if next_id is None:
             self.close()

@@ -1,5 +1,5 @@
 # ============================================================
-#  演示关卡构建器：60×60地图 + 全部实体 — 中土世界版
+#  Demo level builder: 60×60 map + all entities — Middle-earth edition
 # ============================================================
 from iso_map import (
     IsoMap, TILE_GRASS, TILE_GRASS2, TILE_DIRT, TILE_STONE, TILE_STONE2,
@@ -16,17 +16,17 @@ import random
 
 
 def build_demo_level():
-    """构建60×60演示关卡，返回 (iso_map, entities_data, dialogue_mgr, quest_mgr, shop_mgr)"""
+    """Build the 60×60 demo level; returns (iso_map, entities_data, dialogue_mgr, quest_mgr, shop_mgr)."""
     iso_map = IsoMap(60, 60)
 
     # ============================================================
-    #  地形绘制
+    #  Terrain painting
     # ============================================================
 
-    # --- 基底：全部草地 ---
+    # --- Base layer: all grass ---
     iso_map.fill_rect(0, 0, 60, 60, TILE_GRASS)
 
-    # --- 法贡森林 Fangorn Forest (左上 0-19, 0-19) ---
+    # --- Fangorn Forest (top-left 0-19, 0-19) ---
     iso_map.fill_rect(0, 0, 20, 20, TILE_GRASS2)
     for c in range(0, 20):
         iso_map.set_tile(c, 0, TILE_TREE)
@@ -43,7 +43,7 @@ def build_demo_level():
         iso_map.set_tile(10, r, TILE_DIRT)
         iso_map.set_tile(11, r, TILE_DIRT)
 
-    # --- 摩瑞亚矿洞 Mines of Moria (中上 20-39, 0-19) ---
+    # --- Mines of Moria (top-center 20-39, 0-19) ---
     iso_map.fill_rect(20, 0, 40, 20, TILE_STONE)
     for c in range(20, 40):
         iso_map.set_tile(c, 0, TILE_WALL)
@@ -57,7 +57,7 @@ def build_demo_level():
     for pos in [(25, 5), (35, 5), (25, 14), (35, 14), (30, 10)]:
         iso_map.set_tile(pos[0], pos[1], TILE_WALL)
 
-    # --- 迷雾山脉 Misty Mountains (右上 40-59, 0-19) ---
+    # --- Misty Mountains (top-right 40-59, 0-19) ---
     iso_map.fill_rect(40, 0, 60, 20, TILE_STONE2)
     for c in range(40, 60):
         iso_map.set_tile(c, 0, TILE_CLIFF)
@@ -66,12 +66,12 @@ def build_demo_level():
     for pos in [(45, 5), (50, 3), (55, 8), (48, 12), (53, 15), (42, 10)]:
         iso_map.set_tile(pos[0], pos[1], TILE_CLIFF)
 
-    # --- 洛汗平原西 Fields of Rohan West (左中 0-19, 20-39) ---
+    # --- Fields of Rohan West (mid-left 0-19, 20-39) ---
     iso_map.fill_rect(0, 20, 20, 40, TILE_GRASS)
     for r in range(20, 40):
         iso_map.set_tile(0, r, TILE_TREE)
 
-    # --- 霍比屯 Hobbiton (中间 20-39, 20-39) ---
+    # --- Hobbiton (center 20-39, 20-39) ---
     iso_map.fill_rect(20, 20, 40, 40, TILE_DIRT)
     for c in range(20, 40):
         iso_map.set_tile(c, 30, TILE_STONE)
@@ -84,24 +84,24 @@ def build_demo_level():
     iso_map.fill_rect(23, 33, 28, 37, TILE_WALL)
     iso_map.set_tile(25, 33, TILE_DIRT)
 
-    # --- 洛汗平原东 Fields of Rohan East (右中 40-59, 20-39) ---
+    # --- Fields of Rohan East (mid-right 40-59, 20-39) ---
     iso_map.fill_rect(40, 20, 60, 40, TILE_GRASS)
     iso_map.fill_rect(40, 20, 60, 22, TILE_GRASS2)
     for r in range(20, 40):
         iso_map.set_tile(59, r, TILE_TREE)
 
-    # --- 安都因河 Anduin River (左下 0-19, 40-59) ---
+    # --- Anduin River (bottom-left 0-19, 40-59) ---
     iso_map.fill_rect(0, 40, 20, 60, TILE_WATER)
     iso_map.fill_rect(0, 40, 20, 42, TILE_GRASS2)
     iso_map.fill_rect(0, 58, 20, 60, TILE_GRASS2)
     iso_map.fill_rect(3, 45, 17, 55, TILE_WATER2)
 
-    # --- 奥斯吉利亚斯桥 Osgiliath Bridge (中下 20-39, 40-59) ---
+    # --- Osgiliath Bridge (bottom-center 20-39, 40-59) ---
     iso_map.fill_rect(20, 40, 40, 60, TILE_GRASS)
     iso_map.fill_rect(20, 46, 40, 52, TILE_WATER)
     iso_map.fill_rect(28, 46, 32, 52, TILE_BRIDGE)
 
-    # --- 魔多荒原 Mordor Wastes (右下 40-59, 40-59) ---
+    # --- Mordor Wastes (bottom-right 40-59, 40-59) ---
     iso_map.fill_rect(40, 40, 60, 60, TILE_SAND)
     for c in range(40, 60):
         iso_map.set_tile(c, 59, TILE_CLIFF)
@@ -111,35 +111,35 @@ def build_demo_level():
         iso_map.set_tile(pos[0], pos[1], TILE_CLIFF)
 
     # ============================================================
-    #  实体
+    #  Entities
     # ============================================================
     enemies = []
     npcs = []
 
-    # --- 古墓尸妖 Barrow-wights（法贡森林区）×5 ---
+    # --- Barrow-wights (Fangorn Forest zone) ×5 ---
     wight_positions = [(5, 5), (8, 8), (14, 4), (6, 13), (16, 15)]
     for c, r in wight_positions:
         enemies.append(Enemy(c, r, "wight"))
 
-    # --- BOSS 洞穴巨魔 Cave Troll（摩瑞亚矿洞）---
+    # --- BOSS: Cave Troll (Mines of Moria) ---
     boss = Enemy(30, 10, "cave_troll")
     enemies.append(boss)
 
-    # --- 兽人 Orcs（洛汗平原东）×8 ---
+    # --- Orcs (Fields of Rohan East) ×8 ---
     for i in range(8):
         c = random.randint(42, 57)
         r = random.randint(22, 37)
         e = Enemy(c, r, "orc")
         enemies.append(e)
 
-    # --- 乌鲁克弓手 Uruk-hai Archers（魔多荒原）×6 ---
+    # --- Uruk-hai Archers (Mordor Wastes) ×6 ---
     uruk_positions = [
         (44, 44), (50, 46), (54, 50), (46, 54), (52, 56), (48, 48)
     ]
     for c, r in uruk_positions:
         enemies.append(Enemy(c, r, "uruk_archer"))
 
-    # --- NPC ---
+    # --- NPCs ---
     gandalf = NPC(25, 28, name="Gandalf", npc_type="quest",
                   quest_ids=["quest_orc", "quest_boss"],
                   dialogue_id="gandalf_default",
@@ -232,11 +232,11 @@ def build_demo_level():
     npcs.append(sam)
 
     # ============================================================
-    #  对话系统
+    #  Dialogue system
     # ============================================================
     dialogue_mgr = DialogueManager()
 
-    # 甘道夫对话
+    # Gandalf dialogue
     dialogue_mgr.register("gandalf_default", {
         "start": {
             "text": t("dlg_gandalf_default"),
@@ -282,7 +282,7 @@ def build_demo_level():
         }
     })
 
-    # 酒馆老板对话
+    # Innkeeper dialogue
     dialogue_mgr.register("barliman_default", {
         "start": {
             "text": t("dlg_barliman_default"),
@@ -294,7 +294,7 @@ def build_demo_level():
         }
     })
 
-    # 吉姆利对话（分支）
+    # Gimli dialogue (branching)
     dialogue_mgr.register("gimli_default", {
         "start": {
             "text": t("dlg_gimli_default"),
@@ -320,7 +320,7 @@ def build_demo_level():
         },
     })
 
-    # 阿尔温对话
+    # Arwen dialogue
     def heal_player(game):
         p = game.entities.player
         if p:
@@ -349,7 +349,7 @@ def build_demo_level():
         },
     })
 
-    # 收集任务对话
+    # Collect quest dialogue
     dialogue_mgr.register("quest_collect_accept", {
         "start": {
             "text": t("dlg_quest_collect_accept"),
@@ -369,7 +369,7 @@ def build_demo_level():
         }
     })
 
-    # 博罗米尔对话
+    # Boromir dialogue
     dialogue_mgr.register("boromir_default", {
         "start": {
             "text": t("dlg_boromir_default"),
@@ -386,7 +386,7 @@ def build_demo_level():
         },
     })
 
-    # 探索任务对话
+    # Explore quest dialogue
     dialogue_mgr.register("quest_explore_accept", {
         "start": {
             "text": t("dlg_quest_explore_accept"),
@@ -406,7 +406,7 @@ def build_demo_level():
         }
     })
 
-    # 弗罗多对话
+    # Frodo dialogue
     dialogue_mgr.register("frodo_default", {
         "start": {
             "text": t("dlg_frodo_default"),
@@ -421,7 +421,7 @@ def build_demo_level():
         },
     })
 
-    # 护送任务对话
+    # Escort quest dialogue
     dialogue_mgr.register("quest_escort_accept", {
         "start": {
             "text": t("dlg_quest_escort_accept"),
@@ -441,7 +441,7 @@ def build_demo_level():
         }
     })
 
-    # 山姆对话
+    # Sam dialogue
     dialogue_mgr.register("sam_default", {
         "start": {
             "text": t("dlg_sam_default"),
@@ -456,7 +456,7 @@ def build_demo_level():
         },
     })
 
-    # 限时任务对话
+    # Timed kill quest dialogue
     dialogue_mgr.register("quest_timed_accept", {
         "start": {
             "text": t("dlg_quest_timed_accept"),
@@ -477,7 +477,7 @@ def build_demo_level():
     })
 
     # ============================================================
-    #  任务系统
+    #  Quest system
     # ============================================================
     quest_mgr = QuestManager()
 
@@ -550,7 +550,7 @@ def build_demo_level():
     })
 
     # ============================================================
-    #  商店系统
+    #  Shop system
     # ============================================================
     shop_mgr = ShopManager()
 
@@ -564,7 +564,7 @@ def build_demo_level():
     ])
 
     # ============================================================
-    #  返回
+    #  Return
     # ============================================================
     return {
         "iso_map": iso_map,
