@@ -2,7 +2,7 @@
 #  Entity base class + EntityManager
 # ============================================================
 import pygame
-from utils import world_to_screen
+from core.utils import world_to_screen
 
 
 class Entity:
@@ -88,7 +88,7 @@ class EntityManager:
 
     def get_enemies_in_range(self, wx, wy, radius):
         """Return list of active enemies within radius."""
-        from utils import distance
+        from core.utils import distance
         result = []
         for e in self.enemies:
             if e.active and e.stats.alive:
@@ -98,7 +98,7 @@ class EntityManager:
 
     def get_nearest_npc(self, wx, wy, radius):
         """Return nearest NPC within radius, or None."""
-        from utils import distance
+        from core.utils import distance
         best = None
         best_dist = radius + 1
         for n in self.npcs:

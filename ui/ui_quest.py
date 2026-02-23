@@ -2,12 +2,12 @@
 #  Quest log UI (screen resolution)
 # ============================================================
 import pygame
-from settings import (
+from core.settings import (
     SCREEN_WIDTH, SCREEN_HEIGHT, QUEST_WIDTH, QUEST_HEIGHT,
     COLOR_UI, COLOR_ACCENT,
 )
-from i18n import t, tf
-from utils import draw_text, get_font, ui, FONT_UI_SM, FONT_UI_MD
+from systems.i18n import t, tf
+from core.utils import draw_text, get_font, ui, FONT_UI_SM, FONT_UI_MD
 
 
 class QuestUI:

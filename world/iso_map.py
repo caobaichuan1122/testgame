@@ -2,15 +2,15 @@
 #  Isometric tile map: coordinate transforms, collision, diamond rendering
 # ============================================================
 import pygame
-from settings import (
+from core.settings import (
     HALF_W, HALF_H, TILE_W, TILE_H, MAP_COLS, MAP_ROWS,
     INTERNAL_WIDTH, INTERNAL_HEIGHT,
     COLOR_GRASS, COLOR_GRASS_DARK, COLOR_DIRT, COLOR_STONE, COLOR_STONE_DARK,
     COLOR_WATER, COLOR_WATER_DEEP, COLOR_SAND, COLOR_BRIDGE,
     COLOR_TREE, COLOR_WALL, COLOR_CAVE, COLOR_CLIFF,
 )
-from utils import world_to_screen
-from sprite_manager import load_tile_sprites
+from core.utils import world_to_screen
+from assets.sprite_manager import load_tile_sprites
 
 # Tile types
 TILE_EMPTY = 0

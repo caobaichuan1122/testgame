@@ -3,9 +3,9 @@
 # ============================================================
 import math
 import pygame
-from entity import Entity
-from utils import distance
-from sprite_manager import load_single_sprite
+from entities.entity import Entity
+from core.utils import distance
+from assets.sprite_manager import load_single_sprite
 
 
 class Projectile(Entity):

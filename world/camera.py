@@ -1,8 +1,8 @@
 # ============================================================
 #  Isometric camera: follows player, world-to-screen offset
 # ============================================================
-from settings import INTERNAL_WIDTH, INTERNAL_HEIGHT, HALF_W, HALF_H
-from utils import world_to_screen
+from core.settings import INTERNAL_WIDTH, INTERNAL_HEIGHT, HALF_W, HALF_H
+from core.utils import world_to_screen
 
 
 class Camera:

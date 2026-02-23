@@ -4,7 +4,7 @@
 import math
 import os
 import pygame
-from settings import HALF_W, HALF_H, INTERNAL_WIDTH, INTERNAL_HEIGHT, PIXEL_SCALE
+from core.settings import HALF_W, HALF_H, INTERNAL_WIDTH, INTERNAL_HEIGHT, PIXEL_SCALE
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ASSETS_DIR = os.path.join(BASE_DIR, "assets")

@@ -3,13 +3,13 @@
 # ============================================================
 import math
 import pygame
-from entity import Entity
-from stats import Stats
-from inventory import Inventory
-from settings import PLAYER_SPEED, PLAYER_COLOR, HALF_W, HALF_H
-from utils import normalize
-from sprite_manager import load_entity_sprites
-from i18n import t, tf, get_item_name
+from entities.entity import Entity
+from systems.stats import Stats
+from systems.inventory import Inventory
+from core.settings import PLAYER_SPEED, PLAYER_COLOR, HALF_W, HALF_H
+from core.utils import normalize
+from assets.sprite_manager import load_entity_sprites
+from systems.i18n import t, tf, get_item_name
 
 
 # 8-direction movement mapping (WASD → world coordinate offsets)
@@ -142,7 +142,7 @@ class Player(Entity):
 
     def on_projectile_hit(self, enemy, damage, game):
         """Callback when a projectile hits an enemy."""
-        from combat import check_crit
+        from systems.combat import check_crit
         is_crit = check_crit(self.stats.dex)
         if is_crit:
             damage = int(damage * 1.5)
@@ -181,8 +181,8 @@ class Player(Entity):
 
     def draw_labels(self, surface, camera):
         """Draw floating messages on screen layer (avoid scaling blur)."""
-        from utils import get_font, FONT_UI_SM
-        from settings import PIXEL_SCALE
+        from core.utils import get_font, FONT_UI_SM
+        from core.settings import PIXEL_SCALE
 
         sx, sy = camera.world_to_cam(self.wx, self.wy)
         scr_x = sx * PIXEL_SCALE

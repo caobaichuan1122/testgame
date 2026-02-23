@@ -1,8 +1,8 @@
 # ============================================================
 #  Entry point
 # ============================================================
-from logger import setup_logging, get_logger
-from game import Game
+from core.logger import setup_logging, get_logger
+from core.game import Game
 
 log = get_logger("main")
 

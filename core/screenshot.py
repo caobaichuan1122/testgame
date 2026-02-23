@@ -1,7 +1,7 @@
 """Auto-run the game for a few frames and save screenshots."""
 import pygame
-from game import Game
-from settings import STATE_PLAYING, STATE_MENU
+from core.game import Game
+from core.settings import STATE_PLAYING, STATE_MENU
 
 game = Game()
 

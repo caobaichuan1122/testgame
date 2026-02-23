@@ -2,12 +2,12 @@
 #  Main menu / pause / game over (screen resolution)
 # ============================================================
 import pygame
-from settings import (
+from core.settings import (
     SCREEN_WIDTH, SCREEN_HEIGHT,
     COLOR_UI, COLOR_ACCENT, COLOR_BG, WINDOW_TITLE,
 )
-from i18n import t
-from utils import draw_text, get_font, FONT_UI_SM, FONT_UI_MD, FONT_UI_LG
+from systems.i18n import t
+from core.utils import draw_text, get_font, FONT_UI_SM, FONT_UI_MD, FONT_UI_LG
 
 
 class MenuUI:

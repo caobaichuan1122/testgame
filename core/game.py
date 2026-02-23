@@ -2,19 +2,19 @@
 #  Game core: state management, main loop — isometric RPG
 # ============================================================
 import pygame
-from settings import (
+from core.settings import (
     SCREEN_WIDTH, SCREEN_HEIGHT, INTERNAL_WIDTH, INTERNAL_HEIGHT,
     PIXEL_SCALE, FPS, COLOR_BG, WINDOW_TITLE,
     STATE_MENU, STATE_PLAYING, STATE_PAUSED, STATE_GAME_OVER, STATE_COMBAT,
 )
-from camera import Camera
-from entity import EntityManager
-from player import Player
-from ui_manager import UIManager
-from chat_log import ChatLog
-from combat_scene import CombatScene
-from i18n import t, tf, switch_language
-from logger import get_logger
+from world.camera import Camera
+from entities.entity import EntityManager
+from entities.player import Player
+from ui.ui_manager import UIManager
+from systems.chat_log import ChatLog
+from systems.combat_scene import CombatScene
+from systems.i18n import t, tf, switch_language
+from core.logger import get_logger
 
 log = get_logger("game")
 
@@ -43,7 +43,7 @@ class Game:
         self.combat_scene = CombatScene()
 
     def load_level(self):
-        from demo_level import build_demo_level
+        from world.demo_level import build_demo_level
         log.info("Loading demo level")
         data = build_demo_level()
 

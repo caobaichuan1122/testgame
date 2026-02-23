@@ -4,10 +4,10 @@
 import math
 import random as rnd
 import pygame
-from entity import Entity
-from settings import COLOR_NPC
-from sprite_manager import load_entity_sprites
-from i18n import t, tf
+from entities.entity import Entity
+from core.settings import COLOR_NPC
+from assets.sprite_manager import load_entity_sprites
+from systems.i18n import t, tf
 
 
 class NPC(Entity):
@@ -275,8 +275,8 @@ class NPC(Entity):
 
     def draw_labels(self, surface, camera):
         """Draw name, icon, bubble on screen layer (avoid scaling blur)."""
-        from settings import PIXEL_SCALE
-        from utils import get_font, FONT_UI_SM
+        from core.settings import PIXEL_SCALE
+        from core.utils import get_font, FONT_UI_SM
 
         sx, sy = camera.world_to_cam(self.wx, self.wy)
         # Convert canvas coordinates to screen coordinates
@@ -314,7 +314,7 @@ class NPC(Entity):
 
     def _draw_bubble(self, surface, sx, base_y):
         """Draw NPC overhead speech bubble (screen resolution)."""
-        from utils import get_font, FONT_UI_SM
+        from core.utils import get_font, FONT_UI_SM
         font = get_font(FONT_UI_SM)
 
         # Auto word-wrap

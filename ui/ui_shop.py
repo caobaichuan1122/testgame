@@ -2,13 +2,13 @@
 #  Shop UI (screen resolution)
 # ============================================================
 import pygame
-from settings import (
+from core.settings import (
     SCREEN_WIDTH, SCREEN_HEIGHT, SHOP_WIDTH, SHOP_HEIGHT,
     COLOR_UI, COLOR_ACCENT, COLOR_GOLD,
 )
-from inventory import ITEMS
-from i18n import t, tf, get_item_name
-from utils import draw_text, get_font, ui, FONT_UI_SM, FONT_UI_MD
+from systems.inventory import ITEMS
+from systems.i18n import t, tf, get_item_name
+from core.utils import draw_text, get_font, ui, FONT_UI_SM, FONT_UI_MD
 
 
 class ShopUI:

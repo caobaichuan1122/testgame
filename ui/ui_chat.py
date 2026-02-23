@@ -2,10 +2,10 @@
 #  Message log UI: compact mode (bottom-left) + expanded mode (scrollable panel)
 # ============================================================
 import pygame
-from settings import SCREEN_WIDTH, SCREEN_HEIGHT, CHAT_LOG_MAX_DISPLAY, CHAT_LOG_FADE_TICKS
-from chat_log import CATEGORY_COLORS
-from i18n import t
-from utils import get_font, ui, FONT_UI_SM
+from core.settings import SCREEN_WIDTH, SCREEN_HEIGHT, CHAT_LOG_MAX_DISPLAY, CHAT_LOG_FADE_TICKS
+from systems.chat_log import CATEGORY_COLORS
+from systems.i18n import t
+from core.utils import get_font, ui, FONT_UI_SM
 
 
 class ChatUI:

@@ -2,16 +2,16 @@
 #  UI dispatcher: manages all UI subsystems
 # ============================================================
 import pygame
-from ui_hud import HUD
-from ui_dialogue import DialogueUI
-from ui_inventory import InventoryUI
-from ui_shop import ShopUI
-from ui_quest import QuestUI
-from ui_menu import MenuUI
-from ui_chat import ChatUI
-from settings import SCREEN_WIDTH, SCREEN_HEIGHT
-from i18n import t, tf
-from utils import get_font, FONT_UI_SM
+from ui.ui_hud import HUD
+from ui.ui_dialogue import DialogueUI
+from ui.ui_inventory import InventoryUI
+from ui.ui_shop import ShopUI
+from ui.ui_quest import QuestUI
+from ui.ui_menu import MenuUI
+from ui.ui_chat import ChatUI
+from core.settings import SCREEN_WIDTH, SCREEN_HEIGHT
+from systems.i18n import t, tf
+from core.utils import get_font, FONT_UI_SM
 
 
 class UIManager:

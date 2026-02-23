@@ -3,16 +3,16 @@
 # ============================================================
 import random
 import pygame
-from settings import (
+from core.settings import (
     SCREEN_WIDTH, SCREEN_HEIGHT,
     COLOR_BG, COLOR_HP, COLOR_MP, COLOR_UI, COLOR_ACCENT, COLOR_GOLD,
     COMBAT_MELEE, COMBAT_RANGED, COMBAT_MAGIC,
     MELEE_BASE_DMG, RANGED_BASE_DMG, MAGIC_BASE_DMG, MAGIC_COST,
 )
-from combat import calc_damage, check_crit
-from inventory import ITEMS
-from i18n import t, tf, get_item_name
-from utils import draw_bar, draw_text, get_font, ui, FONT_UI_SM, FONT_UI_MD, FONT_UI_LG
+from systems.combat import calc_damage, check_crit
+from systems.inventory import ITEMS
+from systems.i18n import t, tf, get_item_name
+from core.utils import draw_bar, draw_text, get_font, ui, FONT_UI_SM, FONT_UI_MD, FONT_UI_LG
 
 
 # --- Combat phases ---

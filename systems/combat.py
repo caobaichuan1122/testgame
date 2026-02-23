@@ -3,13 +3,13 @@
 # ============================================================
 import math
 import random
-from settings import (
+from core.settings import (
     COMBAT_MELEE, COMBAT_RANGED, COMBAT_MAGIC,
     MELEE_RANGE, MELEE_ARC, MELEE_COOLDOWN, MELEE_BASE_DMG,
     RANGED_RANGE, RANGED_COOLDOWN, RANGED_BASE_DMG,
     MAGIC_RANGE, MAGIC_COOLDOWN, MAGIC_BASE_DMG, MAGIC_COST,
 )
-from utils import distance, angle_between, angle_diff
+from core.utils import distance, angle_between, angle_diff
 
 
 COMBAT_NAMES = {
@@ -100,8 +100,8 @@ def perform_melee_attack(player, entities):
 
 def perform_ranged_attack(player, entities):
     """Execute ranged attack: spawn arrow projectile."""
-    from projectile import Projectile
-    from settings import ARROW_SPEED, COLOR_ARROW
+    from entities.projectile import Projectile
+    from core.settings import ARROW_SPEED, COLOR_ARROW
 
     weapon_bonus = 0
     equipped = player.inventory.get_equipped_weapon()
@@ -129,8 +129,8 @@ def perform_magic_attack(player, entities):
     if not player.stats.use_mp(MAGIC_COST):
         return None
 
-    from projectile import Projectile
-    from settings import MAGIC_SPEED, COLOR_MAGIC_BOLT
+    from entities.projectile import Projectile
+    from core.settings import MAGIC_SPEED, COLOR_MAGIC_BOLT
 
     weapon_bonus = 0
     equipped = player.inventory.get_equipped_weapon()

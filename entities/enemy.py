@@ -4,10 +4,10 @@
 import math
 import random
 import pygame
-from entity import Entity
-from stats import Stats
-from utils import distance, normalize
-from sprite_manager import load_entity_sprites
+from entities.entity import Entity
+from systems.stats import Stats
+from core.utils import distance, normalize
+from assets.sprite_manager import load_entity_sprites
 
 
 # AI states
@@ -130,7 +130,7 @@ class Enemy(Entity):
 
         # Trigger turn-based combat when within attack range
         if dist_to_player < self.attack_range and self.combat_cooldown <= 0:
-            from settings import STATE_COMBAT
+            from core.settings import STATE_COMBAT
             if game.state != STATE_COMBAT:
                 game.start_combat(self)
             return
@@ -152,7 +152,7 @@ class Enemy(Entity):
     def _ai_attack(self, game, player, dist_to_player):
         # In turn-based combat mode, attack state directly triggers combat
         if self.combat_cooldown <= 0:
-            from settings import STATE_COMBAT
+            from core.settings import STATE_COMBAT
             if game.state != STATE_COMBAT:
                 game.start_combat(self)
         else:

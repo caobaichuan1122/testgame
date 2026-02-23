@@ -1,8 +1,8 @@
 # ============================================================
 #  Shop system: buy/sell logic
 # ============================================================
-from inventory import ITEMS
-from i18n import t, tf, get_item_name
+from systems.inventory import ITEMS
+from systems.i18n import t, tf, get_item_name
 
 
 class ShopManager:

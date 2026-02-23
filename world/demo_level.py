@@ -1,17 +1,17 @@
 # ============================================================
 #  Demo level builder: 60×60 map + all entities — Middle-earth edition
 # ============================================================
-from iso_map import (
+from world.iso_map import (
     IsoMap, TILE_GRASS, TILE_GRASS2, TILE_DIRT, TILE_STONE, TILE_STONE2,
     TILE_WATER, TILE_WATER2, TILE_SAND, TILE_BRIDGE,
     TILE_TREE, TILE_WALL, TILE_CAVE, TILE_CLIFF,
 )
-from enemy import Enemy
-from npc import NPC
-from dialogue import DialogueManager
-from quest import QuestManager
-from shop import ShopManager
-from i18n import t, tf
+from entities.enemy import Enemy
+from entities.npc import NPC
+from systems.dialogue import DialogueManager
+from systems.quest import QuestManager
+from systems.shop import ShopManager
+from systems.i18n import t, tf
 import random
 
 

@@ -2,8 +2,8 @@
 #  Dialogue box UI (screen resolution)
 # ============================================================
 import pygame
-from settings import SCREEN_WIDTH, SCREEN_HEIGHT, DIALOGUE_HEIGHT, COLOR_UI, COLOR_ACCENT
-from utils import draw_text, get_font, ui, FONT_UI_SM, FONT_UI_MD
+from core.settings import SCREEN_WIDTH, SCREEN_HEIGHT, DIALOGUE_HEIGHT, COLOR_UI, COLOR_ACCENT
+from core.utils import draw_text, get_font, ui, FONT_UI_SM, FONT_UI_MD
 
 
 class DialogueUI:

@@ -2,12 +2,12 @@
 #  HUD: HP/MP bars, level, gold, combat mode, quest hints (screen resolution)
 # ============================================================
 import pygame
-from settings import (
+from core.settings import (
     SCREEN_WIDTH, SCREEN_HEIGHT,
     COLOR_HP, COLOR_MP, COLOR_GOLD, COLOR_UI, COLOR_ACCENT,
 )
-from i18n import tf
-from utils import draw_bar, draw_text, get_font, ui, FONT_UI_SM, FONT_UI_MD
+from systems.i18n import tf
+from core.utils import draw_bar, draw_text, get_font, ui, FONT_UI_SM, FONT_UI_MD
 
 
 class HUD:

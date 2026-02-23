@@ -1,8 +1,8 @@
 # ============================================================
 #  Quest system: objective tracking, rewards
 # ============================================================
-from i18n import tf
-from logger import get_logger
+from systems.i18n import tf
+from core.logger import get_logger
 
 log = get_logger("quest")
 
