@@ -94,6 +94,7 @@ COLOR_ARROW = (200, 180, 100)
 COLOR_MAGIC_BOLT = (130, 80, 255)
 
 # --- Game states ---
+STATE_LOGIN = "login"
 STATE_MENU = "menu"
 STATE_PLAYING = "playing"
 STATE_PAUSED = "paused"
@@ -112,6 +113,10 @@ QUEST_HEIGHT = 150
 
 # --- Language ---
 LANGUAGE = "zh"  # "zh" Chinese, "en" English
+
+# --- Online features ---
+# Set to True when Django backend is ready to enable login screen
+ENABLE_LOGIN = False
 
 # --- Message log ---
 CHAT_LOG_MAX_DISPLAY = 15   # max visible lines in expanded mode

@@ -53,3 +53,7 @@ ModuleNotFoundError: No module named 'settings'
 2026-02-23 11:36:59 [INFO    ] game.quest: Quest accepted: quest_collect (阿西拉斯采集)
 2026-02-23 11:37:37 [INFO    ] game.game: Main loop ended
 2026-02-23 11:37:37 [INFO    ] game.main: Game exited
+2026-02-23 11:56:24 [INFO    ] game.main: Game starting
+2026-02-23 11:56:25 [INFO    ] game.game: Main loop started
+2026-02-23 11:56:49 [INFO    ] game.game: Main loop ended
+2026-02-23 11:56:49 [INFO    ] game.main: Game exited

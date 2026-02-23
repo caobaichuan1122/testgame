@@ -5,7 +5,8 @@ import pygame
 from core.settings import (
     SCREEN_WIDTH, SCREEN_HEIGHT, INTERNAL_WIDTH, INTERNAL_HEIGHT,
     PIXEL_SCALE, FPS, COLOR_BG, WINDOW_TITLE,
-    STATE_MENU, STATE_PLAYING, STATE_PAUSED, STATE_GAME_OVER, STATE_COMBAT,
+    STATE_LOGIN, STATE_MENU, STATE_PLAYING, STATE_PAUSED, STATE_GAME_OVER, STATE_COMBAT,
+    ENABLE_LOGIN,
 )
 from world.camera import Camera
 from entities.entity import EntityManager
@@ -28,7 +29,7 @@ class Game:
         self.canvas = pygame.Surface((INTERNAL_WIDTH, INTERNAL_HEIGHT))
         self.clock = pygame.time.Clock()
         self.running = True
-        self.state = STATE_MENU
+        self.state = STATE_LOGIN if ENABLE_LOGIN else STATE_MENU
 
         # Subsystems
         self.iso_map = None
@@ -41,6 +42,10 @@ class Game:
         self.quest_manager = None
         self.shop_manager = None
         self.combat_scene = CombatScene()
+
+        # Login UI (created once, lives here)
+        from ui.ui_login import LoginUI
+        self.login_ui = LoginUI()
 
     def load_level(self):
         from world.demo_level import build_demo_level
@@ -85,7 +90,9 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 self._handle_keydown(event.key)
             if event.type == pygame.TEXTINPUT:
-                if self.state == STATE_PLAYING:
+                if self.state == STATE_LOGIN:
+                    self.login_ui.handle_text(event.text)
+                elif self.state == STATE_PLAYING:
                     # IME may intercept keystrokes and only emit TEXTINPUT, not KEYDOWN
                     if event.text.lower() == 'e' and not self.ui.has_overlay and not self.ui._chat_input_active:
                         if not (self.dialogue_manager and self.dialogue_manager.is_active):
@@ -95,7 +102,17 @@ class Game:
                     self.ui.handle_text_input(event.text)
 
     def _handle_keydown(self, key):
-        if self.state == STATE_MENU:
+        if self.state == STATE_LOGIN:
+            result = self.login_ui.handle_key(key, self)
+            if result == "offline":
+                log.info("Player chose offline mode")
+                self.state = STATE_MENU
+            elif result is True:
+                # Login succeeded
+                self.state = STATE_MENU
+            return
+
+        elif self.state == STATE_MENU:
             if key == pygame.K_RETURN or key == pygame.K_SPACE:
                 self.state = STATE_PLAYING
                 self.load_level()
@@ -185,7 +202,10 @@ class Game:
                     log.warning("Player died — game over")
 
     def draw(self):
-        if self.state == STATE_MENU:
+        if self.state == STATE_LOGIN:
+            self.login_ui.draw(self.screen)
+
+        elif self.state == STATE_MENU:
             # Menu drawn directly on screen (full screen resolution)
             self.screen.fill(COLOR_BG)
             self.ui.menu_ui.draw_main_menu(self.screen)
