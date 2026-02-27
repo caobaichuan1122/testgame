@@ -4,6 +4,10 @@
 # IDE
 .idea/
 
+# Virtual environment
+.venv/
+venv/
+
 # Python 缓存
 __pycache__/
 *.py[cod]
