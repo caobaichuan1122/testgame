@@ -328,6 +328,10 @@ LANG = {
         "en": "You have been defeated...",
         "zh": "你被击败了……",
     },
+    "combat_start_hint": {
+        "en": "Get ready for battle!",
+        "zh": "准备战斗！",
+    },
     "victory_continue": {
         "en": "VICTORY! Press Enter to continue",
         "zh": "胜利！按 Enter 继续",
@@ -1098,6 +1102,82 @@ LANG = {
         "en": "Language switched to English",
         "zh": "语言已切换为中文",
     },
+
+    # ========================
+    #  Main menu items
+    # ========================
+    "menu_new_game": {
+        "en": "New Game",
+        "zh": "开始游戏",
+    },
+    "menu_settings": {
+        "en": "Settings",
+        "zh": "设  置",
+    },
+    "menu_quit": {
+        "en": "Quit",
+        "zh": "退  出",
+    },
+    "menu_resume": {
+        "en": "Resume",
+        "zh": "继续游戏",
+    },
+    "menu_main_menu": {
+        "en": "Main Menu",
+        "zh": "返回主菜单",
+    },
+    "menu_nav_hint": {
+        "en": "[UP/DOWN] Select   [ENTER] Confirm   [ESC] Resume",
+        "zh": "[上/下] 选择   [ENTER] 确认   [ESC] 继续",
+    },
+
+    # ========================
+    #  Settings screen
+    # ========================
+    "settings": {
+        "en": "SETTINGS",
+        "zh": "设  置",
+    },
+    "settings_hint": {
+        "en": "[S] Settings",
+        "zh": "[S] 设置",
+    },
+    "settings_resolution": {
+        "en": "Resolution",
+        "zh": "分辨率",
+    },
+    "settings_fullscreen": {
+        "en": "Fullscreen",
+        "zh": "全屏",
+    },
+    "settings_language": {
+        "en": "Language",
+        "zh": "语言",
+    },
+    "settings_on": {
+        "en": "On",
+        "zh": "开",
+    },
+    "settings_off": {
+        "en": "Off",
+        "zh": "关",
+    },
+    "settings_music": {
+        "en": "Music",
+        "zh": "音乐",
+    },
+    "settings_nav_hint": {
+        "en": "[UP/DOWN] Select   [LEFT/RIGHT] Change   [ESC] Back",
+        "zh": "[上/下] 选择   [左/右] 更改   [ESC] 返回",
+    },
+    "lang_name_zh": {
+        "en": "Chinese",
+        "zh": "中文",
+    },
+    "lang_name_en": {
+        "en": "English",
+        "zh": "英语",
+    },
 }
 
 
@@ -1134,5 +1214,16 @@ def switch_language():
     else:
         settings.LANGUAGE = "zh"
     # Clear font cache (different fonts needed for zh/en)
+    utils._font_cache.clear()
+    utils._font_path = None
+
+
+def set_language(lang):
+    """Set language directly to 'zh' or 'en', clear font cache."""
+    import core.settings as settings
+    import core.utils as utils
+    if lang not in ("zh", "en") or settings.LANGUAGE == lang:
+        return
+    settings.LANGUAGE = lang
     utils._font_cache.clear()
     utils._font_path = None

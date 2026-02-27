@@ -1,6 +1,9 @@
 # Claude Code 内部目录
 .claude/
 
+# IDE
+.idea/
+
 # Python 缓存
 __pycache__/
 *.py[cod]
@@ -60,3 +63,6 @@ build/
 Thumbs.db
 desktop.ini
 nul
+
+# Logs
+logs/

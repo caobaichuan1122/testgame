@@ -275,13 +275,15 @@ class NPC(Entity):
 
     def draw_labels(self, surface, camera):
         """Draw name, icon, bubble on screen layer (avoid scaling blur)."""
-        from core.settings import PIXEL_SCALE
+        from core.settings import INTERNAL_WIDTH, INTERNAL_HEIGHT
         from core.utils import get_font, FONT_UI_SM
 
+        sw, sh = surface.get_size()
+        scale_x = sw / INTERNAL_WIDTH
+        scale_y = sh / INTERNAL_HEIGHT
         sx, sy = camera.world_to_cam(self.wx, self.wy)
-        # Convert canvas coordinates to screen coordinates
-        scr_x = sx * PIXEL_SCALE
-        name_top_y = getattr(self, '_canvas_top_y', sy - 22) * PIXEL_SCALE
+        scr_x = sx * scale_x
+        name_top_y = getattr(self, '_canvas_top_y', sy - 22) * scale_y
 
         font = get_font(FONT_UI_SM)
 

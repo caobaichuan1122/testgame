@@ -9,7 +9,6 @@ from ui.ui_shop import ShopUI
 from ui.ui_quest import QuestUI
 from ui.ui_menu import MenuUI
 from ui.ui_chat import ChatUI
-from core.settings import SCREEN_WIDTH, SCREEN_HEIGHT
 from systems.i18n import t, tf
 from core.utils import get_font, FONT_UI_SM
 
@@ -164,11 +163,12 @@ class UIManager:
 
     def _draw_chat_input(self, surface):
         """Draw the chat input box."""
+        sw, sh = surface.get_size()
         font = get_font(FONT_UI_SM)
         box_h = 32
-        box_w = SCREEN_WIDTH - 20
+        box_w = sw - 20
         box_x = 10
-        box_y = SCREEN_HEIGHT - box_h - 10
+        box_y = sh - box_h - 10
 
         # Semi-transparent background
         bg = pygame.Surface((box_w, box_h), pygame.SRCALPHA)

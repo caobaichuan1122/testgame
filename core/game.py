@@ -5,7 +5,8 @@ import pygame
 from core.settings import (
     SCREEN_WIDTH, SCREEN_HEIGHT, INTERNAL_WIDTH, INTERNAL_HEIGHT,
     PIXEL_SCALE, FPS, COLOR_BG, WINDOW_TITLE,
-    STATE_LOGIN, STATE_MENU, STATE_PLAYING, STATE_PAUSED, STATE_GAME_OVER, STATE_COMBAT,
+    STATE_LOGIN, STATE_MENU, STATE_SETTINGS, STATE_PLAYING,
+    STATE_PAUSED, STATE_GAME_OVER, STATE_COMBAT,
     ENABLE_LOGIN,
 )
 from world.camera import Camera
@@ -14,7 +15,7 @@ from entities.player import Player
 from ui.ui_manager import UIManager
 from systems.chat_log import ChatLog
 from systems.combat_scene import CombatScene
-from systems.i18n import t, tf, switch_language
+from systems.i18n import t, tf, switch_language, set_language
 from core.logger import get_logger
 
 log = get_logger("game")
@@ -25,11 +26,30 @@ class Game:
         pygame.init()
         pygame.display.set_caption(WINDOW_TITLE)
 
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        # Load saved settings and apply before creating the display
+        from core.settings_manager import SettingsManager
+        self.settings_mgr = SettingsManager()
+        set_language(self.settings_mgr.language)
+        flags = pygame.FULLSCREEN if self.settings_mgr.fullscreen else 0
+        w, h = self.settings_mgr.resolution
+        self.screen = pygame.display.set_mode((w, h), flags)
+        # Sync module-level constants so all UI/entity code uses correct dimensions
+        import core.settings as _s
+        _s.SCREEN_WIDTH = w
+        _s.SCREEN_HEIGHT = h
+        _s.PIXEL_SCALE = max(1, w // INTERNAL_WIDTH)
+
         self.canvas = pygame.Surface((INTERNAL_WIDTH, INTERNAL_HEIGHT))
         self.clock = pygame.time.Clock()
         self.running = True
         self.state = STATE_LOGIN if ENABLE_LOGIN else STATE_MENU
+        self._settings_caller = STATE_MENU  # which state opened the settings screen
+
+        # Music (initialized after display so mixer is ready)
+        from systems.music import MusicManager
+        self.music_mgr = MusicManager()
+        if self.settings_mgr.music_enabled:
+            self.music_mgr.play()
 
         # Subsystems
         self.iso_map = None
@@ -113,13 +133,29 @@ class Game:
             return
 
         elif self.state == STATE_MENU:
-            if key == pygame.K_RETURN or key == pygame.K_SPACE:
-                self.state = STATE_PLAYING
-                self.load_level()
+            sel = self.ui.menu_ui._menu_sel
+            num = 3  # New Game / Settings / Quit
+            if key == pygame.K_UP:
+                self.ui.menu_ui._menu_sel = (sel - 1) % num
+            elif key == pygame.K_DOWN:
+                self.ui.menu_ui._menu_sel = (sel + 1) % num
+            elif key in (pygame.K_RETURN, pygame.K_SPACE):
+                if sel == 0:
+                    self.state = STATE_PLAYING
+                    self.load_level()
+                elif sel == 1:
+                    self._settings_caller = STATE_MENU
+                    self.state = STATE_SETTINGS
+                elif sel == 2:
+                    self.running = False
             elif key == pygame.K_l:
                 switch_language()
             elif key == pygame.K_ESCAPE:
                 self.running = False
+
+        elif self.state == STATE_SETTINGS:
+            self._handle_settings_key(key)
+
 
         elif self.state == STATE_PLAYING:
             if self.ui.handle_key(key, self):
@@ -136,12 +172,26 @@ class Game:
             self.combat_scene.handle_key(key)
 
         elif self.state == STATE_PAUSED:
+            sel = self.ui.menu_ui._pause_sel
+            num = len(["resume", "settings", "main_menu"])
             if key == pygame.K_ESCAPE:
                 self.state = STATE_PLAYING
+                self.ui.menu_ui._pause_sel = 0
+            elif key == pygame.K_UP:
+                self.ui.menu_ui._pause_sel = (sel - 1) % num
+            elif key == pygame.K_DOWN:
+                self.ui.menu_ui._pause_sel = (sel + 1) % num
+            elif key in (pygame.K_RETURN, pygame.K_SPACE):
+                if sel == 0:   # Resume
+                    self.state = STATE_PLAYING
+                    self.ui.menu_ui._pause_sel = 0
+                elif sel == 1:  # Settings
+                    self._settings_caller = STATE_PAUSED
+                    self.state = STATE_SETTINGS
+                elif sel == 2:  # Main Menu
+                    self._return_to_menu()
             elif key == pygame.K_l:
                 switch_language()
-                self.load_level()
-                self.state = STATE_PLAYING
 
         elif self.state == STATE_GAME_OVER:
             if key == pygame.K_RETURN:
@@ -206,9 +256,11 @@ class Game:
             self.login_ui.draw(self.screen)
 
         elif self.state == STATE_MENU:
-            # Menu drawn directly on screen (full screen resolution)
             self.screen.fill(COLOR_BG)
             self.ui.menu_ui.draw_main_menu(self.screen)
+
+        elif self.state == STATE_SETTINGS:
+            self.ui.menu_ui.draw_settings(self.screen, self.settings_mgr)
 
         elif self.state == STATE_COMBAT:
             self.combat_scene.draw(self.screen)
@@ -235,11 +287,68 @@ class Game:
         if self.iso_map:
             self.iso_map.draw(self.canvas, self.camera)
         self.entities.draw(self.canvas, self.camera)
-        scaled = pygame.transform.scale(self.canvas,
-                                        (SCREEN_WIDTH, SCREEN_HEIGHT))
+        scaled = pygame.transform.scale(self.canvas, self.screen.get_size())
         self.screen.blit(scaled, (0, 0))
         # Draw text labels on screen layer (avoid scaling blur)
         self.entities.draw_labels(self.screen, self.camera)
+
+    def _return_to_menu(self):
+        """Tear down the current game world and return to the main menu."""
+        self.iso_map = None
+        self.entities = EntityManager()
+        self.dialogue_manager = None
+        self.quest_manager = None
+        self.shop_manager = None
+        self.chat_log = ChatLog()
+        self.combat_scene = CombatScene()
+        self.ui.close_all()
+        self.ui.menu_ui._pause_sel = 0
+        self.ui.menu_ui._menu_sel = 0
+        self.state = STATE_MENU
+        log.info("Returned to main menu")
+
+    def apply_display_settings(self):
+        """Recreate pygame display with current settings; sync module constants."""
+        sm = self.settings_mgr
+        set_language(sm.language)
+        flags = pygame.FULLSCREEN if sm.fullscreen else 0
+        w, h = sm.resolution
+        self.screen = pygame.display.set_mode((w, h), flags)
+        import core.settings as _s
+        _s.SCREEN_WIDTH = w
+        _s.SCREEN_HEIGHT = h
+        _s.PIXEL_SCALE = max(1, w // INTERNAL_WIDTH)
+        log.info("Display applied: %dx%d PIXEL_SCALE=%d lang=%s", w, h, _s.PIXEL_SCALE, sm.language)
+
+    def _handle_settings_key(self, key):
+        """Handle keyboard input while settings screen is open."""
+        sm = self.settings_mgr
+        num_opts = 4
+        sel = self.ui.menu_ui._settings_sel
+
+        if key in (pygame.K_ESCAPE, pygame.K_RETURN):
+            sm.save()
+            self.state = self._settings_caller
+        elif key == pygame.K_UP:
+            self.ui.menu_ui._settings_sel = (sel - 1) % num_opts
+        elif key == pygame.K_DOWN:
+            self.ui.menu_ui._settings_sel = (sel + 1) % num_opts
+        elif key in (pygame.K_LEFT, pygame.K_RIGHT):
+            if sel == 0:  # resolution
+                if key == pygame.K_LEFT:
+                    sm.prev_resolution()
+                else:
+                    sm.next_resolution()
+                self.apply_display_settings()
+            elif sel == 1:  # fullscreen
+                sm.toggle_fullscreen()
+                self.apply_display_settings()
+            elif sel == 2:  # language
+                sm.toggle_language()
+                self.apply_display_settings()
+            elif sel == 3:  # music
+                sm.toggle_music()
+                self.music_mgr.set_enabled(sm.music_enabled)
 
     def run(self):
         log.info("Main loop started")

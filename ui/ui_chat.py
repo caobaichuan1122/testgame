@@ -2,7 +2,7 @@
 #  Message log UI: compact mode (bottom-left) + expanded mode (scrollable panel)
 # ============================================================
 import pygame
-from core.settings import SCREEN_WIDTH, SCREEN_HEIGHT, CHAT_LOG_MAX_DISPLAY, CHAT_LOG_FADE_TICKS
+from core.settings import CHAT_LOG_MAX_DISPLAY, CHAT_LOG_FADE_TICKS
 from systems.chat_log import CATEGORY_COLORS
 from systems.i18n import t
 from core.utils import get_font, ui, FONT_UI_SM
@@ -51,7 +51,7 @@ class ChatUI:
 
         font = get_font(FONT_UI_SM)
         line_h = ui(6)
-        base_y = SCREEN_HEIGHT - ui(20)
+        base_y = surface.get_height() - ui(20)
         current_tick = chat_log.tick
 
         for i, (text, category, tick) in enumerate(reversed(recent)):
@@ -74,7 +74,7 @@ class ChatUI:
         font = get_font(FONT_UI_SM)
         line_h = ui(6)
         panel_w = ui(120)
-        panel_h = SCREEN_HEIGHT - ui(30)
+        panel_h = surface.get_height() - ui(30)
         panel_x = ui(2)
         panel_y = ui(15)
 

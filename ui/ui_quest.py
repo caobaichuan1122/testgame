@@ -3,7 +3,7 @@
 # ============================================================
 import pygame
 from core.settings import (
-    SCREEN_WIDTH, SCREEN_HEIGHT, QUEST_WIDTH, QUEST_HEIGHT,
+    QUEST_WIDTH, QUEST_HEIGHT,
     COLOR_UI, COLOR_ACCENT,
 )
 from systems.i18n import t, tf
@@ -29,13 +29,14 @@ class QuestUI:
         font = get_font(FONT_UI_MD)
         font_sm = get_font(FONT_UI_SM)
 
-        overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+        sw, sh = surface.get_size()
+        overlay = pygame.Surface((sw, sh), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 140))
         surface.blit(overlay, (0, 0))
 
         pw, ph = ui(QUEST_WIDTH), ui(QUEST_HEIGHT)
-        px = (SCREEN_WIDTH - pw) // 2
-        py = (SCREEN_HEIGHT - ph) // 2
+        px = (sw - pw) // 2
+        py = (sh - ph) // 2
         pygame.draw.rect(surface, (30, 30, 40), (px, py, pw, ph))
         pygame.draw.rect(surface, (80, 80, 100), (px, py, pw, ph), 1)
 

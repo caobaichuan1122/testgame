@@ -96,6 +96,7 @@ COLOR_MAGIC_BOLT = (130, 80, 255)
 # --- Game states ---
 STATE_LOGIN = "login"
 STATE_MENU = "menu"
+STATE_SETTINGS = "settings"
 STATE_PLAYING = "playing"
 STATE_PAUSED = "paused"
 STATE_GAME_OVER = "game_over"

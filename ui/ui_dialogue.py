@@ -2,7 +2,7 @@
 #  Dialogue box UI (screen resolution)
 # ============================================================
 import pygame
-from core.settings import SCREEN_WIDTH, SCREEN_HEIGHT, DIALOGUE_HEIGHT, COLOR_UI, COLOR_ACCENT
+from core.settings import DIALOGUE_HEIGHT, COLOR_UI, COLOR_ACCENT
 from core.utils import draw_text, get_font, ui, FONT_UI_SM, FONT_UI_MD
 
 
@@ -17,15 +17,16 @@ class DialogueUI:
         font = get_font(FONT_UI_MD)
         font_sm = get_font(FONT_UI_SM)
 
+        sw, sh = surface.get_size()
         panel_h = ui(DIALOGUE_HEIGHT)
-        panel_y = SCREEN_HEIGHT - panel_h
+        panel_y = sh - panel_h
 
         # Semi-transparent background
-        panel = pygame.Surface((SCREEN_WIDTH, panel_h), pygame.SRCALPHA)
+        panel = pygame.Surface((sw, panel_h), pygame.SRCALPHA)
         panel.fill((0, 0, 0, 180))
         surface.blit(panel, (0, panel_y))
         pygame.draw.rect(surface, (80, 80, 100),
-                         (0, panel_y, SCREEN_WIDTH, panel_h), 1)
+                         (0, panel_y, sw, panel_h), 1)
 
         # Speaker name
         if dialogue_mgr.speaker_name:

@@ -182,11 +182,14 @@ class Player(Entity):
     def draw_labels(self, surface, camera):
         """Draw floating messages on screen layer (avoid scaling blur)."""
         from core.utils import get_font, FONT_UI_SM
-        from core.settings import PIXEL_SCALE
+        from core.settings import INTERNAL_WIDTH, INTERNAL_HEIGHT
 
+        sw, sh = surface.get_size()
+        scale_x = sw / INTERNAL_WIDTH
+        scale_y = sh / INTERNAL_HEIGHT
         sx, sy = camera.world_to_cam(self.wx, self.wy)
-        scr_x = sx * PIXEL_SCALE
-        scr_y = sy * PIXEL_SCALE
+        scr_x = sx * scale_x
+        scr_y = sy * scale_y
 
         msg_font = get_font(FONT_UI_SM)
         for i, (text, timer) in enumerate(self.messages):

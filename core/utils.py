@@ -28,7 +28,8 @@ def screen_to_world(sx, sy):
 
 def ui(v):
     """Scale internal-resolution coordinate to screen-resolution."""
-    return int(v * PIXEL_SCALE)
+    import core.settings as _s
+    return int(v * _s.PIXEL_SCALE)
 
 
 # --- Math utilities ---

@@ -3,7 +3,6 @@
 # ============================================================
 import pygame
 from core.settings import (
-    SCREEN_WIDTH, SCREEN_HEIGHT,
     COLOR_HP, COLOR_MP, COLOR_GOLD, COLOR_UI, COLOR_ACCENT,
 )
 from systems.i18n import tf
@@ -15,6 +14,7 @@ class HUD:
         if not player:
             return
 
+        sw, sh = surface.get_size()
         font = get_font(FONT_UI_MD)
         font_sm = get_font(FONT_UI_SM)
         stats = player.stats
@@ -48,7 +48,7 @@ class HUD:
                       ui(170), ui(13), font_sm, COLOR_ACCENT)
 
         # --- Bottom ---
-        bottom_y = SCREEN_HEIGHT - ui(12)
+        bottom_y = sh - ui(12)
 
         # Quest hint (bottom-left)
         if quest_hint:
@@ -59,6 +59,6 @@ class HUD:
             hint = tf("talk_to", name=player.interact_target.name)
             tw, _ = draw_text(surface, hint, -9999, 0, font_sm)
             draw_text(surface, hint,
-                      SCREEN_WIDTH // 2 - tw // 2,
-                      SCREEN_HEIGHT - ui(24),
+                      sw // 2 - tw // 2,
+                      sh - ui(24),
                       font_sm, COLOR_ACCENT)
