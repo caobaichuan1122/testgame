@@ -4,7 +4,7 @@
 from world.iso_map import (
     IsoMap, TILE_GRASS, TILE_GRASS2, TILE_DIRT, TILE_STONE, TILE_STONE2,
     TILE_WATER, TILE_WATER2, TILE_SAND, TILE_BRIDGE,
-    TILE_TREE, TILE_WALL, TILE_CAVE, TILE_CLIFF,
+    TILE_TREE, TILE_WALL, TILE_CAVE, TILE_CLIFF, TILE_FENCE,
 )
 from entities.enemy import Enemy
 from entities.npc import NPC
@@ -77,12 +77,41 @@ def build_demo_level():
         iso_map.set_tile(c, 30, TILE_STONE)
     for r in range(20, 40):
         iso_map.set_tile(30, r, TILE_STONE)
-    iso_map.fill_rect(23, 23, 28, 27, TILE_WALL)
-    iso_map.set_tile(25, 27, TILE_DIRT)
-    iso_map.fill_rect(33, 23, 38, 27, TILE_WALL)
-    iso_map.set_tile(35, 27, TILE_DIRT)
-    iso_map.fill_rect(23, 33, 28, 37, TILE_WALL)
-    iso_map.set_tile(25, 33, TILE_DIRT)
+
+    # Hollow house builder: wall perimeter + stone floor + dirt door gap
+    def draw_house(c1, r1, c2, r2, door_c, door_r):
+        for c in range(c1, c2 + 1):
+            iso_map.set_tile(c, r1, TILE_WALL)
+            iso_map.set_tile(c, r2, TILE_WALL)
+        for r in range(r1 + 1, r2):
+            iso_map.set_tile(c1, r, TILE_WALL)
+            iso_map.set_tile(c2, r, TILE_WALL)
+        for r in range(r1 + 1, r2):
+            for c in range(c1 + 1, c2):
+                iso_map.set_tile(c, r, TILE_STONE)
+        iso_map.set_tile(door_c, door_r, TILE_DIRT)
+
+    # Building 1 (NW): cols 23-27, rows 23-26, door south at (25,26)
+    draw_house(23, 23, 27, 26, 25, 26)
+    iso_map.set_tile(25, 27, TILE_DIRT)   # path to door
+
+    # Building 2 (NE): cols 33-37, rows 23-26, door south at (35,26)
+    draw_house(33, 23, 37, 26, 35, 26)
+    iso_map.set_tile(35, 27, TILE_DIRT)   # path to door
+
+    # Building 3 (SW): cols 23-27, rows 33-36, door north at (25,33)
+    draw_house(23, 33, 27, 36, 25, 33)
+    iso_map.set_tile(25, 32, TILE_DIRT)   # path to door
+
+    # Fence around Hobbiton — 4 entrances aligned with the crossroads
+    for c in range(20, 40):
+        if not (29 <= c <= 31):
+            iso_map.set_tile(c, 20, TILE_FENCE)
+            iso_map.set_tile(c, 39, TILE_FENCE)
+    for r in range(21, 39):
+        if not (29 <= r <= 31):
+            iso_map.set_tile(20, r, TILE_FENCE)
+            iso_map.set_tile(39, r, TILE_FENCE)
 
     # --- Fields of Rohan East (mid-right 40-59, 20-39) ---
     iso_map.fill_rect(40, 20, 60, 40, TILE_GRASS)
@@ -191,12 +220,12 @@ def build_demo_level():
                 ])
     npcs.append(arwen)
 
-    boromir = NPC(30, 20, name="Boromir", npc_type="quest",
+    boromir = NPC(30, 22, name="Boromir", npc_type="quest",
                   quest_ids=["quest_explore"],
                   dialogue_id="boromir_default",
                   color=(120, 140, 200),
                   behavior="patrol",
-                  patrol_points=[(28, 20), (32, 20), (32, 22), (28, 22)],
+                  patrol_points=[(28, 21), (32, 21), (32, 23), (28, 23)],
                   idle_lines=[
                       t("idle_boromir_1"),
                       t("idle_boromir_2"),

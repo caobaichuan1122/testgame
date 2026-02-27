@@ -9,6 +9,7 @@ from ui.ui_shop import ShopUI
 from ui.ui_quest import QuestUI
 from ui.ui_menu import MenuUI
 from ui.ui_chat import ChatUI
+from ui.ui_minimap import MinimapUI
 from systems.i18n import t, tf
 from core.utils import get_font, FONT_UI_SM
 
@@ -22,6 +23,7 @@ class UIManager:
         self.quest_ui = QuestUI()
         self.menu_ui = MenuUI()
         self.chat_ui = ChatUI()
+        self.minimap = MinimapUI()
         self._game = None  # set by game.py when needed
 
         # Player chat input
@@ -64,6 +66,11 @@ class UIManager:
 
     def handle_key(self, key, game):
         """Handle UI key events; return True if the key was consumed."""
+        # M toggles the minimap (works regardless of other UI state)
+        if key == pygame.K_m:
+            self.minimap.toggle()
+            return True
+
         # Dialogue takes priority
         if game.dialogue_manager and game.dialogue_manager.is_active:
             self.dialogue_ui.handle_key(key, game.dialogue_manager, game)
@@ -141,6 +148,9 @@ class UIManager:
         if game.quest_manager:
             quest_hint = game.quest_manager.active_quest_hint
         self.hud.draw(surface, player, quest_hint)
+
+        # Minimap
+        self.minimap.draw(surface, player, game.entities)
 
         # Message log (drawn after HUD, before dialogue)
         self.chat_ui.draw(surface, game.chat_log)

@@ -7,7 +7,7 @@ from core.settings import (
     INTERNAL_WIDTH, INTERNAL_HEIGHT,
     COLOR_GRASS, COLOR_GRASS_DARK, COLOR_DIRT, COLOR_STONE, COLOR_STONE_DARK,
     COLOR_WATER, COLOR_WATER_DEEP, COLOR_SAND, COLOR_BRIDGE,
-    COLOR_TREE, COLOR_WALL, COLOR_CAVE, COLOR_CLIFF,
+    COLOR_TREE, COLOR_WALL, COLOR_CAVE, COLOR_CLIFF, COLOR_FENCE,
 )
 from core.utils import world_to_screen
 from assets.sprite_manager import load_tile_sprites
@@ -27,6 +27,7 @@ TILE_TREE = 10
 TILE_WALL = 11
 TILE_CAVE = 12
 TILE_CLIFF = 13
+TILE_FENCE = 14
 
 # Tile color mapping
 TILE_COLORS = {
@@ -44,10 +45,11 @@ TILE_COLORS = {
     TILE_WALL: COLOR_WALL,
     TILE_CAVE: COLOR_CAVE,
     TILE_CLIFF: COLOR_CLIFF,
+    TILE_FENCE: COLOR_FENCE,
 }
 
 # Impassable tiles
-SOLID_TILES = {TILE_WATER, TILE_WATER2, TILE_TREE, TILE_WALL, TILE_CLIFF}
+SOLID_TILES = {TILE_WATER, TILE_WATER2, TILE_TREE, TILE_WALL, TILE_CLIFF, TILE_FENCE}
 
 
 class IsoMap:
@@ -120,9 +122,14 @@ class IsoMap:
                     ]
                     pygame.draw.polygon(surface, color, points)
 
-                    # Trees and walls get extra height blocks
-                    if tile_id in (TILE_TREE, TILE_WALL, TILE_CLIFF):
-                        h = 10 if tile_id == TILE_TREE else 6
+                    # Elevated tiles get 3D height blocks
+                    if tile_id in (TILE_TREE, TILE_WALL, TILE_CLIFF, TILE_FENCE):
+                        if tile_id == TILE_TREE:
+                            h = 10
+                        elif tile_id == TILE_FENCE:
+                            h = 3
+                        else:
+                            h = 6
                         dark = tuple(max(0, c - 40) for c in color)
                         # Left face
                         left_face = [

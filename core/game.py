@@ -6,7 +6,7 @@ from core.settings import (
     SCREEN_WIDTH, SCREEN_HEIGHT, INTERNAL_WIDTH, INTERNAL_HEIGHT,
     PIXEL_SCALE, FPS, COLOR_BG, WINDOW_TITLE,
     STATE_LOGIN, STATE_MENU, STATE_SETTINGS, STATE_PLAYING,
-    STATE_PAUSED, STATE_GAME_OVER, STATE_COMBAT,
+    STATE_PAUSED, STATE_GAME_OVER, STATE_COMBAT, STATE_SAVE_PROMPT,
     ENABLE_LOGIN,
 )
 from world.camera import Camera
@@ -19,6 +19,8 @@ from systems.i18n import t, tf, switch_language, set_language
 from core.logger import get_logger
 
 log = get_logger("game")
+
+_PLAYING_STATES = (STATE_PLAYING, STATE_PAUSED, STATE_COMBAT)
 
 
 class Game:
@@ -44,6 +46,10 @@ class Game:
         self.running = True
         self.state = STATE_LOGIN if ENABLE_LOGIN else STATE_MENU
         self._settings_caller = STATE_MENU  # which state opened the settings screen
+
+        # Save slot tracking
+        self.save_slot = None       # int 1-10, set when entering a slot
+        self._prompt_action = None  # "quit" | "main_menu"
 
         # Music (initialized after display so mixer is ready)
         from systems.music import MusicManager
@@ -89,6 +95,7 @@ class Game:
             self.entities.add_npc(npc)
 
         self.camera.snap(px, py)
+        self.ui.minimap.build(self.iso_map)
 
         self.chat_log = ChatLog()
         self.chat_log.add(t("welcome_msg"), "system")
@@ -106,14 +113,19 @@ class Game:
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.running = False
+                if self.state in _PLAYING_STATES:
+                    # Prompt to save before quitting
+                    self._prompt_action = "quit"
+                    self.ui.menu_ui._prompt_sel = 0
+                    self.state = STATE_SAVE_PROMPT
+                else:
+                    self.running = False
             if event.type == pygame.KEYDOWN:
                 self._handle_keydown(event.key)
             if event.type == pygame.TEXTINPUT:
                 if self.state == STATE_LOGIN:
                     self.login_ui.handle_text(event.text)
                 elif self.state == STATE_PLAYING:
-                    # IME may intercept keystrokes and only emit TEXTINPUT, not KEYDOWN
                     if event.text.lower() == 'e' and not self.ui.has_overlay and not self.ui._chat_input_active:
                         if not (self.dialogue_manager and self.dialogue_manager.is_active):
                             if self.entities.player and self.entities.player.interact_target:
@@ -128,36 +140,63 @@ class Game:
                 log.info("Player chose offline mode")
                 self.state = STATE_MENU
             elif result is True:
-                # Login succeeded
                 self.state = STATE_MENU
             return
 
         elif self.state == STATE_MENU:
-            sel = self.ui.menu_ui._menu_sel
-            num = 3  # New Game / Settings / Quit
+            slots = self.ui.menu_ui._get_slots()
+            num   = len(slots)
+            sel   = self.ui.menu_ui._slot_sel
+
             if key == pygame.K_UP:
-                self.ui.menu_ui._menu_sel = (sel - 1) % num
+                self.ui.menu_ui._slot_sel = (sel - 1) % num
             elif key == pygame.K_DOWN:
-                self.ui.menu_ui._menu_sel = (sel + 1) % num
+                self.ui.menu_ui._slot_sel = (sel + 1) % num
             elif key in (pygame.K_RETURN, pygame.K_SPACE):
-                if sel == 0:
-                    self.state = STATE_PLAYING
+                slot_num = sel + 1
+                meta = slots[sel]
+                if meta:
+                    # Occupied slot — load save
+                    from core.save_manager import load as load_save
+                    if load_save(self, slot_num):
+                        self.save_slot = slot_num
+                        self.state = STATE_PLAYING
+                        self.chat_log.add(tf("load_from_slot", n=slot_num), "system")
+                        log.info("Loaded slot %d", slot_num)
+                else:
+                    # Empty slot — start fresh
                     self.load_level()
-                elif sel == 1:
-                    self._settings_caller = STATE_MENU
-                    self.state = STATE_SETTINGS
-                elif sel == 2:
-                    self.running = False
+                    self.save_slot = slot_num
+                    self.state = STATE_PLAYING
+                    log.info("New game in slot %d", slot_num)
+            elif key == pygame.K_DELETE or key == pygame.K_BACKSPACE:
+                slot_num = sel + 1
+                from core.save_manager import delete_slot
+                delete_slot(slot_num)
+                self.ui.menu_ui.refresh_slots()
+            elif key == pygame.K_s:
+                self._settings_caller = STATE_MENU
+                self.state = STATE_SETTINGS
             elif key == pygame.K_l:
                 switch_language()
+                self.ui.menu_ui.refresh_slots()
             elif key == pygame.K_ESCAPE:
                 self.running = False
 
         elif self.state == STATE_SETTINGS:
             self._handle_settings_key(key)
 
-
         elif self.state == STATE_PLAYING:
+            if key == pygame.K_F5:
+                slot = self.save_slot if self.save_slot else 1
+                from core.save_manager import save as save_game
+                if save_game(self, slot):
+                    if self.save_slot is None:
+                        self.save_slot = 1
+                    self.ui.menu_ui.refresh_slots()
+                    if self.entities.player:
+                        self.entities.player.add_message(tf("save_to_slot", n=slot))
+                return
             if self.ui.handle_key(key, self):
                 return
             if self.dialogue_manager and self.dialogue_manager.is_active:
@@ -188,10 +227,35 @@ class Game:
                 elif sel == 1:  # Settings
                     self._settings_caller = STATE_PAUSED
                     self.state = STATE_SETTINGS
-                elif sel == 2:  # Main Menu
-                    self._return_to_menu()
+                elif sel == 2:  # Main Menu — show save prompt
+                    self._prompt_action = "main_menu"
+                    self.ui.menu_ui._prompt_sel = 0
+                    self.state = STATE_SAVE_PROMPT
             elif key == pygame.K_l:
                 switch_language()
+
+        elif self.state == STATE_SAVE_PROMPT:
+            num = 3  # Save / Don't Save / Cancel
+            if key in (pygame.K_LEFT, pygame.K_UP):
+                self.ui.menu_ui._prompt_sel = (self.ui.menu_ui._prompt_sel - 1) % num
+            elif key in (pygame.K_RIGHT, pygame.K_DOWN):
+                self.ui.menu_ui._prompt_sel = (self.ui.menu_ui._prompt_sel + 1) % num
+            elif key in (pygame.K_RETURN, pygame.K_SPACE):
+                choice = self.ui.menu_ui._prompt_sel
+                if choice == 0:  # Save
+                    slot = self.save_slot if self.save_slot else 1
+                    from core.save_manager import save as save_game
+                    save_game(self, slot)
+                    if self.save_slot is None:
+                        self.save_slot = 1
+                    self.ui.menu_ui.refresh_slots()
+                    self._execute_prompt_action()
+                elif choice == 1:  # Don't Save
+                    self._execute_prompt_action()
+                else:  # Cancel
+                    self.state = STATE_PLAYING
+            elif key == pygame.K_ESCAPE:
+                self.state = STATE_PLAYING
 
         elif self.state == STATE_GAME_OVER:
             if key == pygame.K_RETURN:
@@ -200,21 +264,28 @@ class Game:
             elif key == pygame.K_ESCAPE:
                 self.running = False
 
+    def _execute_prompt_action(self):
+        """Execute the pending prompt action after save/no-save choice."""
+        action = self._prompt_action
+        self._prompt_action = None
+        if action == "quit":
+            self.running = False
+        elif action == "main_menu":
+            self._return_to_menu()
+
     def update(self):
         if self.state == STATE_COMBAT:
             self.combat_scene.update()
             if self.combat_scene.combat_finished:
                 result = self.combat_scene.result
-                enemy = self.combat_scene.enemy
+                enemy  = self.combat_scene.enemy
                 self.combat_scene.active = False
                 if result == "win":
-                    # Enemy is dead, mark as inactive
                     enemy.active = False
                     self.state = STATE_PLAYING
                     log.info("Combat won: defeated %s", enemy.enemy_type)
                 elif result == "flee":
-                    # Flee success, set combat cooldown on enemy
-                    enemy.combat_cooldown = 180  # 3-second cooldown
+                    enemy.combat_cooldown = 180
                     enemy.ai_state = "idle"
                     enemy.ai_timer = 120
                     self.state = STATE_PLAYING
@@ -226,13 +297,11 @@ class Game:
 
         if self.state == STATE_PLAYING:
             self.chat_log.advance_tick()
-            # Advance typewriter effect (must update even with overlay UI)
             if self.dialogue_manager and self.dialogue_manager.is_active:
                 self.dialogue_manager.update_typewriter()
                 return
             if self.ui.has_overlay:
                 return
-            # Update timed quest timers
             if self.quest_manager:
                 failed = self.quest_manager.update_timers()
                 for qid, q in failed:
@@ -274,6 +343,11 @@ class Game:
             self.ui.draw_gameplay(self.screen, self)
             self.ui.menu_ui.draw_pause(self.screen)
 
+        elif self.state == STATE_SAVE_PROMPT:
+            self._draw_world()
+            self.ui.draw_gameplay(self.screen, self)
+            self.ui.menu_ui.draw_save_prompt(self.screen)
+
         elif self.state == STATE_GAME_OVER:
             self._draw_world()
             self.ui.draw_gameplay(self.screen, self)
@@ -289,7 +363,6 @@ class Game:
         self.entities.draw(self.canvas, self.camera)
         scaled = pygame.transform.scale(self.canvas, self.screen.get_size())
         self.screen.blit(scaled, (0, 0))
-        # Draw text labels on screen layer (avoid scaling blur)
         self.entities.draw_labels(self.screen, self.camera)
 
     def _return_to_menu(self):
@@ -303,7 +376,9 @@ class Game:
         self.combat_scene = CombatScene()
         self.ui.close_all()
         self.ui.menu_ui._pause_sel = 0
-        self.ui.menu_ui._menu_sel = 0
+        self.ui.menu_ui._slot_sel = 0
+        self.ui.menu_ui.refresh_slots()
+        self.save_slot = None
         self.state = STATE_MENU
         log.info("Returned to main menu")
 

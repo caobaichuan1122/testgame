@@ -83,6 +83,7 @@ COLOR_TREE = (25, 80, 25)            # ancient forest
 COLOR_WALL = (65, 55, 50)            # stone wall
 COLOR_CAVE = (50, 45, 55)            # mine cave
 COLOR_CLIFF = (90, 80, 75)           # Misty Mountains cliff
+COLOR_FENCE = (139, 90, 43)          # wooden fence
 
 # Entity colors
 COLOR_ENEMY_ORC = (80, 100, 60)      # orc dark green
@@ -101,6 +102,7 @@ STATE_PLAYING = "playing"
 STATE_PAUSED = "paused"
 STATE_GAME_OVER = "game_over"
 STATE_COMBAT = "combat"
+STATE_SAVE_PROMPT = "save_prompt"   # overlay: "save before leaving?"
 
 # --- UI ---
 HUD_HEIGHT = 16

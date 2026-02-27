@@ -1104,11 +1104,67 @@ LANG = {
     },
 
     # ========================
+    #  Save slot UI
+    # ========================
+    "slot_picker_title": {
+        "en": "SELECT SAVE SLOT",
+        "zh": "选择存档槽",
+    },
+    "slot_empty": {
+        "en": "─── Empty ───",
+        "zh": "─── 空档 ───",
+    },
+    "slot_hint": {
+        "en": "[ENTER] Play   [DEL] Delete   [S] Settings   [ESC] Quit",
+        "zh": "[ENTER] 进入   [DEL] 删除   [S] 设置   [ESC] 退出",
+    },
+    "save_prompt_title": {
+        "en": "Save before leaving?",
+        "zh": "离开前要保存吗？",
+    },
+    "save_prompt_save": {
+        "en": "Save",
+        "zh": "保存",
+    },
+    "save_prompt_nosave": {
+        "en": "Don't Save",
+        "zh": "不保存",
+    },
+    "save_prompt_cancel": {
+        "en": "Cancel",
+        "zh": "取消",
+    },
+    "save_to_slot": {
+        "en": "Saved to slot {n}",
+        "zh": "已保存到档位 {n}",
+    },
+    "load_from_slot": {
+        "en": "Loaded slot {n}",
+        "zh": "已读取档位 {n}",
+    },
+
+    # ========================
     #  Main menu items
     # ========================
     "menu_new_game": {
         "en": "New Game",
         "zh": "开始游戏",
+    },
+    "menu_load_game": {
+        "en": "Load Game",
+        "zh": "读取存档",
+    },
+    "save_success": {
+        "en": "Game saved.  [F5]",
+        "zh": "游戏已保存。[F5]",
+    },
+    "load_success": {
+        "en": "Save loaded.",
+        "zh": "存档已读取。",
+    },
+    "no_save_file": {
+        "en": "No save file found.",
+        "zh": "没有找到存档。",
     },
     "menu_settings": {
         "en": "Settings",
