@@ -8,6 +8,7 @@ from core.settings import (
     COLOR_GRASS, COLOR_GRASS_DARK, COLOR_DIRT, COLOR_STONE, COLOR_STONE_DARK,
     COLOR_WATER, COLOR_WATER_DEEP, COLOR_SAND, COLOR_BRIDGE,
     COLOR_TREE, COLOR_WALL, COLOR_CAVE, COLOR_CLIFF, COLOR_FENCE,
+    COLOR_HOUSE_WALL, COLOR_ROOF,
 )
 from core.utils import world_to_screen
 from assets.sprite_manager import load_tile_sprites
@@ -28,28 +29,35 @@ TILE_WALL = 11
 TILE_CAVE = 12
 TILE_CLIFF = 13
 TILE_FENCE = 14
+TILE_HOUSE_WALL = 15   # tall warm-stone wall with window slots
+TILE_ROOF = 16         # terracotta roof interior (wall fill + pyramid)
 
 # Tile color mapping
 TILE_COLORS = {
-    TILE_EMPTY: None,
-    TILE_GRASS: COLOR_GRASS,
-    TILE_GRASS2: COLOR_GRASS_DARK,
-    TILE_DIRT: COLOR_DIRT,
-    TILE_STONE: COLOR_STONE,
-    TILE_STONE2: COLOR_STONE_DARK,
-    TILE_WATER: COLOR_WATER,
-    TILE_WATER2: COLOR_WATER_DEEP,
-    TILE_SAND: COLOR_SAND,
-    TILE_BRIDGE: COLOR_BRIDGE,
-    TILE_TREE: COLOR_TREE,
-    TILE_WALL: COLOR_WALL,
-    TILE_CAVE: COLOR_CAVE,
-    TILE_CLIFF: COLOR_CLIFF,
-    TILE_FENCE: COLOR_FENCE,
+    TILE_EMPTY:      None,
+    TILE_GRASS:      COLOR_GRASS,
+    TILE_GRASS2:     COLOR_GRASS_DARK,
+    TILE_DIRT:       COLOR_DIRT,
+    TILE_STONE:      COLOR_STONE,
+    TILE_STONE2:     COLOR_STONE_DARK,
+    TILE_WATER:      COLOR_WATER,
+    TILE_WATER2:     COLOR_WATER_DEEP,
+    TILE_SAND:       COLOR_SAND,
+    TILE_BRIDGE:     COLOR_BRIDGE,
+    TILE_TREE:       COLOR_TREE,
+    TILE_WALL:       COLOR_WALL,
+    TILE_CAVE:       COLOR_CAVE,
+    TILE_CLIFF:      COLOR_CLIFF,
+    TILE_FENCE:      COLOR_FENCE,
+    TILE_HOUSE_WALL: COLOR_HOUSE_WALL,
+    TILE_ROOF:       COLOR_HOUSE_WALL,  # floor diamond uses wall tone
 }
 
 # Impassable tiles
-SOLID_TILES = {TILE_WATER, TILE_WATER2, TILE_TREE, TILE_WALL, TILE_CLIFF, TILE_FENCE}
+SOLID_TILES = {
+    TILE_WATER, TILE_WATER2, TILE_TREE, TILE_WALL,
+    TILE_CLIFF, TILE_FENCE, TILE_HOUSE_WALL, TILE_ROOF,
+}
 
 
 class IsoMap:
@@ -87,7 +95,6 @@ class IsoMap:
     def draw(self, surface, camera):
         """Draw tiles within visible range (viewport culling)."""
         cam_x, cam_y = camera.offset_x, camera.offset_y
-        margin = 3  # Extra margin tiles to render
 
         for row in range(self.rows):
             for col in range(self.cols):
@@ -96,14 +103,13 @@ class IsoMap:
                 if color is None:
                     continue
 
-                # World coordinates equal grid coordinates (1 unit per cell)
                 sx, sy = world_to_screen(col, row)
                 sx -= cam_x
                 sy -= cam_y
 
                 # Viewport culling
                 if (sx + HALF_W < -TILE_W or sx - HALF_W > INTERNAL_WIDTH + TILE_W or
-                        sy < -TILE_H * 2 or sy > INTERNAL_HEIGHT + TILE_H * 2):
+                        sy < -TILE_H * 4 or sy > INTERNAL_HEIGHT + TILE_H * 4):
                     continue
 
                 # Sprite rendering (if available) with fallback to color blocks
@@ -113,47 +119,92 @@ class IsoMap:
                                  (sx - sprite.get_width() // 2,
                                   sy + HALF_H - sprite.get_height()))
                 else:
-                    # Draw diamond
+                    # Floor diamond
                     points = [
-                        (sx, sy),
+                        (sx,          sy),
                         (sx + HALF_W, sy + HALF_H),
-                        (sx, sy + TILE_H),
+                        (sx,          sy + TILE_H),
                         (sx - HALF_W, sy + HALF_H),
                     ]
                     pygame.draw.polygon(surface, color, points)
 
-                    # Elevated tiles get 3D height blocks
-                    if tile_id in (TILE_TREE, TILE_WALL, TILE_CLIFF, TILE_FENCE):
+                    # --- Elevated tiles ---
+                    if tile_id in (TILE_TREE, TILE_WALL, TILE_CLIFF, TILE_FENCE,
+                                   TILE_HOUSE_WALL, TILE_ROOF):
+
+                        # Height and face base-color per tile type
                         if tile_id == TILE_TREE:
-                            h = 10
+                            h, fc = 10, color
                         elif tile_id == TILE_FENCE:
-                            h = 3
+                            h, fc = 3, color
+                        elif tile_id in (TILE_HOUSE_WALL, TILE_ROOF):
+                            h, fc = 14, COLOR_HOUSE_WALL
                         else:
-                            h = 6
-                        dark = tuple(max(0, c - 40) for c in color)
+                            h, fc = 6, color
+
+                        dark   = (max(0, fc[0]-40), max(0, fc[1]-40), max(0, fc[2]-40))
+                        darker = (max(0, fc[0]-65), max(0, fc[1]-65), max(0, fc[2]-65))
+                        light  = (min(255, fc[0]+22), min(255, fc[1]+22), min(255, fc[2]+22))
+
                         # Left face
-                        left_face = [
+                        pygame.draw.polygon(surface, dark, [
                             (sx - HALF_W, sy + HALF_H),
-                            (sx, sy + TILE_H),
-                            (sx, sy + TILE_H - h),
+                            (sx,          sy + TILE_H),
+                            (sx,          sy + TILE_H - h),
                             (sx - HALF_W, sy + HALF_H - h),
-                        ]
-                        pygame.draw.polygon(surface, dark, left_face)
+                        ])
                         # Right face
-                        right_face = [
+                        pygame.draw.polygon(surface, darker, [
                             (sx + HALF_W, sy + HALF_H),
-                            (sx, sy + TILE_H),
-                            (sx, sy + TILE_H - h),
+                            (sx,          sy + TILE_H),
+                            (sx,          sy + TILE_H - h),
                             (sx + HALF_W, sy + HALF_H - h),
-                        ]
-                        darker = tuple(max(0, c - 60) for c in color)
-                        pygame.draw.polygon(surface, darker, right_face)
-                        # Top face
-                        top_points = [
-                            (sx, sy - h),
+                        ])
+                        # Top face (terracotta for TILE_ROOF, lighter stone otherwise)
+                        top_col = COLOR_ROOF if tile_id == TILE_ROOF else light
+                        pygame.draw.polygon(surface, top_col, [
+                            (sx,          sy - h),
                             (sx + HALF_W, sy + HALF_H - h),
-                            (sx, sy + TILE_H - h),
+                            (sx,          sy + TILE_H - h),
                             (sx - HALF_W, sy + HALF_H - h),
-                        ]
-                        lighter = tuple(min(255, c + 20) for c in color)
-                        pygame.draw.polygon(surface, lighter, top_points)
+                        ])
+
+                        # === Window slots on house walls ===
+                        if tile_id == TILE_HOUSE_WALL:
+                            win = (18, 18, 30)
+                            # Left-face window: small dark diamond in parallelogram center
+                            wlx = sx - HALF_W * 3 // 4
+                            wly = sy + HALF_H - h // 3
+                            pygame.draw.polygon(surface, win, [
+                                (wlx - 2, wly),
+                                (wlx,     wly - 2),
+                                (wlx + 2, wly),
+                                (wlx,     wly + 2),
+                            ])
+                            # Right-face window
+                            wrx = sx + HALF_W * 3 // 4
+                            wry = sy + HALF_H - h // 3
+                            pygame.draw.polygon(surface, win, [
+                                (wrx - 2, wry),
+                                (wrx,     wry - 2),
+                                (wrx + 2, wry),
+                                (wrx,     wry + 2),
+                            ])
+
+                        # === Pyramid roof peak for TILE_ROOF ===
+                        if tile_id == TILE_ROOF:
+                            h_peak = 6
+                            # Pyramid base = elevated top-diamond corners
+                            b_s = (sx,          sy + TILE_H - h)
+                            b_w = (sx - HALF_W, sy + HALF_H - h)
+                            b_e = (sx + HALF_W, sy + HALF_H - h)
+                            apex = (sx, sy - h - h_peak)
+
+                            r = COLOR_ROOF
+                            r_lt = (min(255, r[0]+18), min(255, r[1]+18), min(255, r[2]+18))
+                            r_dk = (max(0,   r[0]-25), max(0,   r[1]-25), max(0,   r[2]-25))
+
+                            # Front-left slope (lighter, catches "light")
+                            pygame.draw.polygon(surface, r_lt, [b_w, b_s, apex])
+                            # Front-right slope (darker, in shadow)
+                            pygame.draw.polygon(surface, r_dk, [b_s, b_e, apex])

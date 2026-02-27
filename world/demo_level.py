@@ -3,6 +3,7 @@
 # ============================================================
 from world.iso_map import (
     IsoMap, TILE_GRASS, TILE_GRASS2, TILE_DIRT, TILE_STONE, TILE_STONE2,
+    TILE_HOUSE_WALL, TILE_ROOF,
     TILE_WATER, TILE_WATER2, TILE_SAND, TILE_BRIDGE,
     TILE_TREE, TILE_WALL, TILE_CAVE, TILE_CLIFF, TILE_FENCE,
 )
@@ -78,17 +79,20 @@ def build_demo_level():
     for r in range(20, 40):
         iso_map.set_tile(30, r, TILE_STONE)
 
-    # Hollow house builder: wall perimeter + stone floor + dirt door gap
+    # House builder: tall stone-wall perimeter + terracotta pyramid-roof interior
     def draw_house(c1, r1, c2, r2, door_c, door_r):
+        # Perimeter walls (tall warm-stone blocks with window slots)
         for c in range(c1, c2 + 1):
-            iso_map.set_tile(c, r1, TILE_WALL)
-            iso_map.set_tile(c, r2, TILE_WALL)
+            iso_map.set_tile(c, r1, TILE_HOUSE_WALL)
+            iso_map.set_tile(c, r2, TILE_HOUSE_WALL)
         for r in range(r1 + 1, r2):
-            iso_map.set_tile(c1, r, TILE_WALL)
-            iso_map.set_tile(c2, r, TILE_WALL)
+            iso_map.set_tile(c1, r, TILE_HOUSE_WALL)
+            iso_map.set_tile(c2, r, TILE_HOUSE_WALL)
+        # Interior: fill with roof tiles (wall column + peaked pyramid)
         for r in range(r1 + 1, r2):
             for c in range(c1 + 1, c2):
-                iso_map.set_tile(c, r, TILE_STONE)
+                iso_map.set_tile(c, r, TILE_ROOF)
+        # Door opening (replaces one wall tile with walkable dirt)
         iso_map.set_tile(door_c, door_r, TILE_DIRT)
 
     # Building 1 (NW): cols 23-27, rows 23-26, door south at (25,26)
