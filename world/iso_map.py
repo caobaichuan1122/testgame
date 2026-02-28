@@ -89,6 +89,20 @@ class IsoMap:
             return False
         return self.grid[row][col] not in SOLID_TILES
 
+    def nearest_walkable(self, wx, wy):
+        """Return the nearest walkable (wx, wy) via spiral search from the given position."""
+        if self.is_walkable(wx, wy):
+            return (float(wx), float(wy))
+        cx, cy = int(wx), int(wy)
+        for radius in range(1, 10):
+            for dc in range(-radius, radius + 1):
+                for dr in range(-radius, radius + 1):
+                    if abs(dc) == radius or abs(dr) == radius:
+                        nx, ny = cx + dc + 0.5, cy + dr + 0.5
+                        if self.is_walkable(nx, ny):
+                            return (nx, ny)
+        return (float(wx), float(wy))
+
     def is_in_bounds(self, wx, wy):
         return 0 <= wx < self.cols and 0 <= wy < self.rows
 

@@ -63,13 +63,35 @@ class DialogueUI:
             draw_text(surface, "...", ui(6),
                       panel_y + panel_h - ui(8), font_sm, (150, 150, 150))
 
+    def handle_mouse(self, pos, dialogue_mgr, game):
+        """Handle left click inside dialogue panel."""
+        if not dialogue_mgr.is_active:
+            return
+        sw, sh = pygame.display.get_surface().get_size()
+        panel_h = ui(DIALOGUE_HEIGHT)
+        panel_y = sh - panel_h
+        if pos[1] < panel_y:
+            return  # click outside dialogue
+        if not dialogue_mgr.typewriter_done:
+            dialogue_mgr.skip_typewriter()
+            return
+        options = dialogue_mgr.get_options()
+        opt_y = panel_y + panel_h - ui(6) - len(options) * ui(5)
+        for i, opt in enumerate(options):
+            oy = opt_y + i * ui(5)
+            if oy <= pos[1] <= oy + ui(5):
+                self.selected = i
+                dialogue_mgr.select_option(i, game)
+                self.selected = 0
+                return
+
     def handle_key(self, key, dialogue_mgr, game):
         if not dialogue_mgr.is_active:
             return False
 
         # While typewriter is active, confirm key skips it
         if not dialogue_mgr.typewriter_done:
-            if key in (pygame.K_RETURN, pygame.K_j, pygame.K_e, pygame.K_SPACE):
+            if key in (pygame.K_RETURN, pygame.K_KP_ENTER, pygame.K_j, pygame.K_e, pygame.K_SPACE):
                 dialogue_mgr.skip_typewriter()
             return False
 
@@ -78,7 +100,7 @@ class DialogueUI:
             self.selected = max(0, self.selected - 1)
         elif key == pygame.K_DOWN or key == pygame.K_s:
             self.selected = min(len(options) - 1, self.selected + 1)
-        elif key == pygame.K_RETURN or key == pygame.K_j or key == pygame.K_e:
+        elif key in (pygame.K_RETURN, pygame.K_KP_ENTER, pygame.K_j, pygame.K_e):
             ended = dialogue_mgr.select_option(self.selected, game)
             self.selected = 0
             return ended

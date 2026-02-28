@@ -25,8 +25,8 @@ HALF_W = TILE_W // 2   # 16
 HALF_H = TILE_H // 2   # 8
 
 # --- Map ---
-MAP_COLS = 60
-MAP_ROWS = 60
+MAP_COLS = 30    # each scene (zone) is 30×30 tiles
+MAP_ROWS = 30
 
 # --- Player ---
 PLAYER_SPEED = 1.8       # world units per frame
@@ -96,6 +96,16 @@ COLOR_NPC = (220, 190, 120)          # NPC gold
 COLOR_ARROW = (200, 180, 100)
 COLOR_MAGIC_BOLT = (130, 80, 255)
 
+# --- Difficulty ---
+DIFFICULTY_LEVELS = ["easy", "normal", "hard"]
+# player_dmg: multiplier on damage player deals to enemies
+# enemy_dmg:  multiplier on damage enemies deal to player
+DIFFICULTY_MULTIPLIERS = {
+    "easy":   {"player_dmg": 1.30, "enemy_dmg": 0.60},
+    "normal": {"player_dmg": 1.00, "enemy_dmg": 1.00},
+    "hard":   {"player_dmg": 0.75, "enemy_dmg": 1.50},
+}
+
 # --- Game states ---
 STATE_LOGIN = "login"
 STATE_MENU = "menu"
@@ -109,8 +119,8 @@ STATE_SAVE_PROMPT = "save_prompt"   # overlay: "save before leaving?"
 # --- UI ---
 HUD_HEIGHT = 16
 DIALOGUE_HEIGHT = 55
-INV_WIDTH = 240
-INV_HEIGHT = 160
+INV_WIDTH  = 260   # ui units → 780 screen px
+INV_HEIGHT = 185   # ui units → 555 screen px
 SHOP_WIDTH = 240
 SHOP_HEIGHT = 160
 QUEST_WIDTH = 220

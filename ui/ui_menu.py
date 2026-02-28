@@ -29,6 +29,73 @@ class MenuUI:
             self.refresh_slots()
         return self._slots_cache
 
+    # ------------------------------------------------------------------
+    #  Mouse hittest helpers — return selected index or -1
+    # ------------------------------------------------------------------
+    def hittest_slot(self, pos) -> int:
+        """Main menu: return slot index 0-9 if pos hits a slot row, else -1."""
+        sw, sh = pygame.display.get_surface().get_size()
+        cx = sw // 2
+        slot_h  = 36
+        panel_w = min(sw - 80, 560)
+        panel_x = cx - panel_w // 2
+        panel_y = sh // 6 + 70
+        slots = self._get_slots()
+        for i in range(len(slots)):
+            row_y = panel_y + 10 + i * slot_h
+            if panel_x <= pos[0] <= panel_x + panel_w and row_y <= pos[1] <= row_y + slot_h:
+                return i
+        return -1
+
+    def hittest_pause(self, pos) -> int:
+        """Pause menu: return item index 0-2 if clicked, else -1."""
+        sw, sh = pygame.display.get_surface().get_size()
+        cx = sw // 2
+        cy = sh // 5
+        item_h  = 52
+        panel_w = 300
+        panel_x = cx - panel_w // 2
+        panel_y = cy + 72
+        for i in range(len(_PAUSE_ITEMS)):
+            item_y = panel_y + 12 + i * item_h
+            if panel_x <= pos[0] <= panel_x + panel_w and item_y <= pos[1] <= item_y + item_h:
+                return i
+        return -1
+
+    def hittest_save_prompt(self, pos) -> int:
+        """Save prompt: return 0/1/2 (Save/NoSave/Cancel) if clicked, else -1."""
+        sw, sh = pygame.display.get_surface().get_size()
+        dlg_w, dlg_h = 420, 130
+        dlg_x = sw // 2 - dlg_w // 2
+        dlg_y = sh // 2 - dlg_h // 2
+        # Divide dialog button row into three equal zones
+        btn_y = dlg_y + 70
+        if not (btn_y <= pos[1] <= dlg_y + dlg_h - 10):
+            return -1
+        zone_w = dlg_w // 3
+        if dlg_x <= pos[0] < dlg_x + zone_w:
+            return 0
+        if dlg_x + zone_w <= pos[0] < dlg_x + zone_w * 2:
+            return 1
+        if dlg_x + zone_w * 2 <= pos[0] <= dlg_x + dlg_w:
+            return 2
+        return -1
+
+    def hittest_settings_row(self, pos) -> int:
+        """Settings: return row index 0-6 if clicked, else -1."""
+        sw, sh = pygame.display.get_surface().get_size()
+        cx = sw // 2
+        cy = sh // 4
+        row_start = cy + 100
+        row_h     = 48
+        box_x = cx - 260
+        box_w = 520
+        for i in range(7):
+            y = row_start + i * row_h
+            if box_x <= pos[0] <= box_x + box_w and y - 8 <= pos[1] <= y + row_h - 8:
+                return i
+        return -1
+
     def draw_main_menu(self, surface):
         font_big = get_font(FONT_UI_LG)
         font_md  = get_font(FONT_UI_MD)
@@ -154,6 +221,9 @@ class MenuUI:
             "settings_fullscreen",
             "settings_language",
             "settings_music",
+            "settings_volume",
+            "settings_fps",
+            "settings_difficulty",
         ]
 
         def get_value(idx):
@@ -164,12 +234,18 @@ class MenuUI:
                 return t("settings_on") if settings_mgr.fullscreen else t("settings_off")
             elif idx == 2:
                 return t("lang_name_zh") if settings_mgr.language == "zh" else t("lang_name_en")
-            else:
+            elif idx == 3:
                 return t("settings_on") if settings_mgr.music_enabled else t("settings_off")
+            elif idx == 4:
+                return f"{int(settings_mgr.music_volume * 100)}%"
+            elif idx == 5:
+                return t("settings_on") if settings_mgr.show_fps else t("settings_off")
+            else:
+                return t(f"diff_{settings_mgr.difficulty}")
 
         row_start = cy + 100
-        row_h     = 58
-        box_pad   = 20
+        row_h     = 48
+        box_pad   = 16
 
         box_rect = pygame.Rect(
             cx - 260,
@@ -189,7 +265,7 @@ class MenuUI:
             y = row_start + i * row_h
 
             if selected:
-                hl = pygame.Rect(cx - 258, y - 10, 516, row_h - 8)
+                hl = pygame.Rect(cx - 258, y - 8, 516, row_h - 6)
                 pygame.draw.rect(surface, (48, 42, 62), hl, border_radius=5)
 
             color  = COLOR_ACCENT if selected else (190, 190, 190)
@@ -206,7 +282,7 @@ class MenuUI:
             else:
                 draw_text(surface, get_value(i), value_x, y, font_sm, (150, 150, 150))
 
-        hint_y = row_start + len(option_keys) * row_h + box_pad + 20
+        hint_y = row_start + len(option_keys) * row_h + box_pad + 14
         draw_text(surface, t("settings_nav_hint"), cx, hint_y,
                   font_sm, (90, 90, 90), center=True)
 

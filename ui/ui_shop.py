@@ -94,6 +94,55 @@ class ShopUI:
         draw_text(surface, t("shop_hint"),
                   px + ui(4), py + ph - ui(5), font_sm, (120, 120, 120))
 
+    def handle_mouse(self, pos, player, shop_manager):
+        """Left click: switch tabs, select item, or buy/sell on second click."""
+        if not self.active or not player or not shop_manager:
+            return
+        sw, sh = pygame.display.get_surface().get_size()
+        pw, ph = ui(SHOP_WIDTH), ui(SHOP_HEIGHT)
+        px = (sw - pw) // 2
+        py = (sh - ph) // 2
+        # Click outside panel → close
+        if not (px <= pos[0] <= px + pw and py <= pos[1] <= py + ph):
+            self.close()
+            return
+        # Tab row: top strip
+        tab_y = py + ui(3)
+        if tab_y <= pos[1] <= tab_y + ui(10):
+            buy_x = px + ui(30)
+            sell_x = px + pw - ui(50)
+            if abs(pos[0] - buy_x) < ui(20):
+                self.tab = "buy"; self.selected = 0; return
+            if abs(pos[0] - sell_x) < ui(20):
+                self.tab = "sell"; self.selected = 0; return
+        # Item list
+        line_h = ui(5)
+        list_y = py + ui(24)
+        if self.tab == "buy":
+            items = shop_manager.get_shop_items(self.shop_id)
+            for i in range(min(len(items), 8)):
+                iy = list_y + i * line_h
+                if px <= pos[0] <= px + pw and iy <= pos[1] <= iy + line_h:
+                    if self.selected == i:
+                        ok, msg = shop_manager.buy_item(self.shop_id, items[i]["id"], player)
+                        player.add_message(msg)
+                    else:
+                        self.selected = i
+                    return
+        else:
+            inv = player.inventory
+            for i in range(min(len(inv.items), 8)):
+                iy = list_y + i * line_h
+                if px <= pos[0] <= px + pw and iy <= pos[1] <= iy + line_h:
+                    if self.selected == i:
+                        slot = inv.items[i]
+                        ok, msg = shop_manager.sell_item(slot["id"], player)
+                        player.add_message(msg)
+                        self.selected = min(self.selected, max(0, len(inv.items) - 1))
+                    else:
+                        self.selected = i
+                    return
+
     def handle_key(self, key, player, shop_manager):
         if not self.active:
             return
@@ -115,7 +164,7 @@ class ShopUI:
             self.selected = max(0, self.selected - 1)
         elif key == pygame.K_DOWN or key == pygame.K_s:
             self.selected = min(max_idx, self.selected + 1)
-        elif key == pygame.K_j or key == pygame.K_RETURN:
+        elif key in (pygame.K_j, pygame.K_RETURN, pygame.K_KP_ENTER):
             if self.tab == "buy":
                 items = shop_manager.get_shop_items(self.shop_id)
                 if 0 <= self.selected < len(items):

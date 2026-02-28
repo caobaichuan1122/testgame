@@ -32,9 +32,9 @@ def calc_damage(base_dmg, stat_bonus, weapon_bonus, target_def):
     return reduced
 
 
-def check_crit(dex):
-    """Crit check: base 5% + DEX*1%."""
-    crit_chance = 0.05 + dex * 0.01
+def check_crit(dex, crit_bonus=0):
+    """Crit check: base 5% + DEX*1% + crit_bonus% (from equipment)."""
+    crit_chance = 0.05 + dex * 0.01 + crit_bonus * 0.01
     return random.random() < crit_chance
 
 
@@ -79,18 +79,17 @@ def perform_melee_attack(player, entities):
     params = get_combat_params(COMBAT_MELEE)
     hit_enemies = []
 
-    weapon_bonus = 0
-    equipped = player.inventory.get_equipped_weapon()
-    if equipped:
-        weapon_bonus = equipped.get("bonus", 0)
+    total_eq = player.inventory.get_total_stats()
+    weapon_bonus = total_eq.get("atk", 0)
+    crit_bonus   = total_eq.get("crit", 0)
 
     for enemy in entities.get_enemies_in_range(player.wx, player.wy, MELEE_RANGE):
         if melee_arc_hit(player.wx, player.wy, player.facing_angle,
                          enemy.wx, enemy.wy):
-            stat_bonus = player.stats.str * 2
+            stat_bonus = (player.stats.str + total_eq.get("str", 0)) * 2
             dmg = calc_damage(params["base_dmg"], stat_bonus, weapon_bonus,
                               enemy.stats.def_)
-            is_crit = check_crit(player.stats.dex)
+            is_crit = check_crit(player.stats.dex, crit_bonus)
             if is_crit:
                 dmg = int(dmg * 1.5)
             enemy.stats.take_damage(dmg)
@@ -103,12 +102,9 @@ def perform_ranged_attack(player, entities):
     from entities.projectile import Projectile
     from core.settings import ARROW_SPEED, COLOR_ARROW
 
-    weapon_bonus = 0
-    equipped = player.inventory.get_equipped_weapon()
-    if equipped:
-        weapon_bonus = equipped.get("bonus", 0)
-
-    stat_bonus = player.stats.dex * 2
+    total_eq = player.inventory.get_total_stats()
+    weapon_bonus = total_eq.get("atk", 0)
+    stat_bonus = (player.stats.dex + total_eq.get("dex", 0)) * 2
     base_dmg = RANGED_BASE_DMG + stat_bonus + weapon_bonus
 
     proj = Projectile(
@@ -132,12 +128,9 @@ def perform_magic_attack(player, entities):
     from entities.projectile import Projectile
     from core.settings import MAGIC_SPEED, COLOR_MAGIC_BOLT
 
-    weapon_bonus = 0
-    equipped = player.inventory.get_equipped_weapon()
-    if equipped:
-        weapon_bonus = equipped.get("bonus", 0)
-
-    stat_bonus = player.stats.int * 2
+    total_eq = player.inventory.get_total_stats()
+    weapon_bonus = total_eq.get("atk", 0)
+    stat_bonus = (player.stats.int + total_eq.get("int", 0)) * 2
     base_dmg = MAGIC_BASE_DMG + stat_bonus + weapon_bonus
 
     proj = Projectile(
