@@ -78,8 +78,12 @@ class QuestManager:
                         q["status"] = "completable"
         self._update_hint()
 
-    def on_player_move(self, player_wx, player_wy):
-        """Detect exploration quest zones on player movement."""
+    def on_player_move(self, player_wx, player_wy, scene_id=None):
+        """Detect exploration quest zones on player movement.
+
+        Zones with a 'scene' key are matched by scene_id + local coords.
+        Zones without 'scene' fall back to world-coordinate matching.
+        """
         discovered_names = []
         for qid, q in self.quests.items():
             if q["status"] == "active" and q["type"] == "explore":
@@ -87,6 +91,12 @@ class QuestManager:
                 for zone in zones:
                     if zone["name"] in q["discovered"]:
                         continue
+                    zone_scene = zone.get("scene")
+                    if zone_scene is not None:
+                        # Scene-aware: must be in the right scene AND local area
+                        if scene_id != zone_scene:
+                            continue
+                    # Coordinate check (local coords for scene zones, world for legacy)
                     if (zone["x1"] <= player_wx <= zone["x2"] and
                             zone["y1"] <= player_wy <= zone["y2"]):
                         q["discovered"].append(zone["name"])

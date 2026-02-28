@@ -53,9 +53,10 @@ class Player(Entity):
         self._handle_movement(game)
         self._check_interact(game)
 
-        # Exploration quest detection
+        # Exploration quest detection (pass current scene_id for scene-aware zones)
         if game.quest_manager:
-            discovered = game.quest_manager.on_player_move(self.wx, self.wy)
+            scene_id = game.scene_mgr.active_id if game.scene_mgr else None
+            discovered = game.quest_manager.on_player_move(self.wx, self.wy, scene_id)
             for name in discovered:
                 self.add_message(tf("discovered", name=name))
                 game.chat_log.add(tf("discovered_area", name=name), "quest")
@@ -64,10 +65,6 @@ class Player(Entity):
         if self.sprites:
             state = "walk" if self.moving else "idle"
             self.sprites.update(state)
-
-        # Apply equipment defense bonus to stats
-        self.stats.def_ = max(self.stats.def_,
-                              3 + self.inventory.get_total_defense())
 
     def _handle_movement(self, game):
         keys = pygame.key.get_pressed()
@@ -95,6 +92,24 @@ class Player(Entity):
 
             new_wx = self.wx + dx * self.speed
             new_wy = self.wy + dy * self.speed
+
+            if game.iso_map:
+                cols = game.iso_map.cols
+                rows = game.iso_map.rows
+
+                # Scene edge detection — trigger transition before collision check
+                if new_wx < 0 and dx < 0:
+                    if game.try_scene_transition("west", self.wy):
+                        return
+                elif new_wx >= cols and dx > 0:
+                    if game.try_scene_transition("east", self.wy):
+                        return
+                if new_wy < 0 and dy < 0:
+                    if game.try_scene_transition("north", self.wx):
+                        return
+                elif new_wy >= rows and dy > 0:
+                    if game.try_scene_transition("south", self.wx):
+                        return
 
             # Collision detection: per-axis
             if game.iso_map.is_walkable(new_wx, self.wy):

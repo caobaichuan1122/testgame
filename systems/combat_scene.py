@@ -9,6 +9,7 @@ from core.settings import (
     COLOR_BG, COLOR_HP, COLOR_MP, COLOR_UI, COLOR_ACCENT, COLOR_GOLD,
     COMBAT_MELEE, COMBAT_RANGED, COMBAT_MAGIC,
     MELEE_BASE_DMG, RANGED_BASE_DMG, MAGIC_BASE_DMG, MAGIC_COST,
+    DIFFICULTY_MULTIPLIERS,
 )
 from systems.combat import calc_damage, check_crit
 from systems.inventory import ITEMS
@@ -119,19 +120,24 @@ class CombatScene:
         name = getattr(self.enemy, 'enemy_type', 'enemy').replace('_', ' ').title()
         self.log.append((tf("wild_appears", name=name), COLOR_UI))
 
+    def handle_mouse(self, pos):
+        """Click anywhere during win/lose/flee phases to confirm."""
+        if self.phase in (PHASE_WIN, PHASE_LOSE, PHASE_FLEE):
+            self.handle_key(pygame.K_RETURN)
+
     def handle_key(self, key):
         if self.phase == PHASE_PLAYER_CHOOSE:
             self._handle_menu_key(key)
         elif self.phase == PHASE_WIN:
-            if key in (pygame.K_RETURN, pygame.K_SPACE):
+            if key in (pygame.K_RETURN, pygame.K_KP_ENTER, pygame.K_SPACE):
                 self.combat_finished = True
                 self.result = "win"
         elif self.phase == PHASE_LOSE:
-            if key in (pygame.K_RETURN, pygame.K_SPACE):
+            if key in (pygame.K_RETURN, pygame.K_KP_ENTER, pygame.K_SPACE):
                 self.combat_finished = True
                 self.result = "lose"
         elif self.phase == PHASE_FLEE:
-            if key in (pygame.K_RETURN, pygame.K_SPACE):
+            if key in (pygame.K_RETURN, pygame.K_KP_ENTER, pygame.K_SPACE):
                 self.combat_finished = True
                 self.result = "flee"
 
@@ -147,7 +153,7 @@ class CombatScene:
             elif key in (pygame.K_d, pygame.K_RIGHT):
                 if self.cursor < len(MAIN_OPT_IDS) - 1:
                     self.cursor = min(len(MAIN_OPT_IDS) - 1, self.cursor + 1)
-            elif key in (pygame.K_RETURN, pygame.K_SPACE, pygame.K_j):
+            elif key in (pygame.K_RETURN, pygame.K_KP_ENTER, pygame.K_SPACE, pygame.K_j):
                 self._select_main_option()
             elif key == pygame.K_ESCAPE:
                 pass
@@ -157,7 +163,7 @@ class CombatScene:
                 self.cursor = (self.cursor - 1) % len(SKILL_DEFS)
             elif key in (pygame.K_s, pygame.K_DOWN):
                 self.cursor = (self.cursor + 1) % len(SKILL_DEFS)
-            elif key in (pygame.K_RETURN, pygame.K_SPACE, pygame.K_j):
+            elif key in (pygame.K_RETURN, pygame.K_KP_ENTER, pygame.K_SPACE, pygame.K_j):
                 self._select_skill()
             elif key == pygame.K_ESCAPE:
                 self.menu_level = MENU_MAIN
@@ -169,7 +175,7 @@ class CombatScene:
                     self.item_cursor = (self.item_cursor - 1) % len(self.item_list)
                 elif key in (pygame.K_s, pygame.K_DOWN):
                     self.item_cursor = (self.item_cursor + 1) % len(self.item_list)
-                elif key in (pygame.K_RETURN, pygame.K_SPACE, pygame.K_j):
+                elif key in (pygame.K_RETURN, pygame.K_KP_ENTER, pygame.K_SPACE, pygame.K_j):
                     self._select_item()
             if key == pygame.K_ESCAPE:
                 self.menu_level = MENU_MAIN
@@ -304,30 +310,31 @@ class CombatScene:
 
     def _calc_player_damage(self, mode):
         p = self.player
-        weapon_bonus = 0
-        equipped = p.inventory.get_equipped_weapon()
-        if equipped:
-            weapon_bonus = equipped.get("bonus", 0)
+        total_eq = p.inventory.get_total_stats()
+        weapon_bonus = total_eq.get("atk", 0)
+        crit_bonus   = total_eq.get("crit", 0)
 
         if mode == COMBAT_MELEE:
             base = MELEE_BASE_DMG
-            stat_bonus = p.stats.str * 2
+            stat_bonus = (p.stats.str + total_eq.get("str", 0)) * 2
         elif mode == COMBAT_RANGED:
             base = RANGED_BASE_DMG
-            stat_bonus = p.stats.dex * 2
+            stat_bonus = (p.stats.dex + total_eq.get("dex", 0)) * 2
         else:
             base = MAGIC_BASE_DMG
-            stat_bonus = p.stats.int * 2
-
-        # Equipment stat bonus
-        stat_bonus += p.inventory.get_stat_bonus("str" if mode == COMBAT_MELEE
-                                                  else "dex" if mode == COMBAT_RANGED
-                                                  else "int") * 2
+            stat_bonus = (p.stats.int + total_eq.get("int", 0)) * 2
 
         dmg = calc_damage(base, stat_bonus, weapon_bonus, self.enemy.stats.def_)
-        is_crit = check_crit(p.stats.dex)
+        is_crit = check_crit(p.stats.dex, crit_bonus)
         if is_crit:
             dmg = int(dmg * 1.5)
+
+        # Apply difficulty multiplier to player-dealt damage
+        if self.game and hasattr(self.game, "settings_mgr"):
+            diff = self.game.settings_mgr.difficulty
+            mul = DIFFICULTY_MULTIPLIERS.get(diff, {}).get("player_dmg", 1.0)
+            dmg = max(1, int(dmg * mul))
+
         return dmg, is_crit
 
     # ---- Enemy AI ----
@@ -344,6 +351,11 @@ class CombatScene:
             raw_dmg = e.atk_damage
             if self.player_defending:
                 raw_dmg = max(1, raw_dmg // 2)
+            # Apply difficulty multiplier to enemy-dealt damage
+            if self.game and hasattr(self.game, "settings_mgr"):
+                diff = self.game.settings_mgr.difficulty
+                mul = DIFFICULTY_MULTIPLIERS.get(diff, {}).get("enemy_dmg", 1.0)
+                raw_dmg = max(1, int(raw_dmg * mul))
             equip_def = self.player.inventory.get_total_defense()
             total_def = self.player.stats.def_ + equip_def
             actual = max(1, raw_dmg - int(total_def * 0.8))

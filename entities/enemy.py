@@ -230,6 +230,67 @@ class Enemy(Entity):
 
 # --- Enemy templates ---
 ENEMY_TEMPLATES = {
+    # ★ Easy
+    "goblin": {
+        "max_hp": 12, "str_val": 1, "dex_val": 1, "int_val": 0, "def_val": 0,
+        "atk_damage": 3, "attack_range": 1.1, "attack_cd": 55,
+        "detect_range": 4.0, "move_speed": 1.2, "wander_range": 3.5,
+        "xp_reward": 10, "gold_reward": 5, "drops": ["goblin_ear"],
+        "color": (70, 90, 50), "draw_size": (3, 2),
+        "ranged": False, "is_boss": False,
+    },
+    "wolf": {
+        "max_hp": 20, "str_val": 3, "dex_val": 2, "int_val": 0, "def_val": 1,
+        "atk_damage": 5, "attack_range": 1.2, "attack_cd": 45,
+        "detect_range": 5.0, "move_speed": 1.5, "wander_range": 5.0,
+        "xp_reward": 15, "gold_reward": 8, "drops": [],
+        "color": (100, 90, 80), "draw_size": (4, 3),
+        "ranged": False, "is_boss": False,
+    },
+    # ★★ Medium
+    "spider": {
+        "max_hp": 25, "str_val": 2, "dex_val": 3, "int_val": 1, "def_val": 1,
+        "atk_damage": 4, "attack_range": 1.3, "attack_cd": 50,
+        "detect_range": 5.5, "move_speed": 1.3, "wander_range": 4.0,
+        "xp_reward": 20, "gold_reward": 10, "drops": ["spider_silk"],
+        "color": (40, 35, 55), "draw_size": (4, 3),
+        "ranged": False, "is_boss": False,
+    },
+    "undead": {
+        "max_hp": 35, "str_val": 3, "dex_val": 1, "int_val": 2, "def_val": 3,
+        "atk_damage": 6, "attack_range": 1.3, "attack_cd": 55,
+        "detect_range": 5.0, "move_speed": 0.9, "wander_range": 4.0,
+        "xp_reward": 30, "gold_reward": 15, "drops": ["morgul_shard"],
+        "color": (130, 140, 160), "draw_size": (4, 3),
+        "ranged": False, "is_boss": False,
+    },
+    # ★★★ Hard
+    "uruk_berserker": {
+        "max_hp": 65, "str_val": 7, "dex_val": 3, "int_val": 0, "def_val": 5,
+        "atk_damage": 12, "attack_range": 1.4, "attack_cd": 55,
+        "detect_range": 6.0, "move_speed": 1.1, "wander_range": 4.0,
+        "xp_reward": 60, "gold_reward": 35, "drops": ["uruk_shield"],
+        "color": (110, 75, 45), "draw_size": (5, 4),
+        "ranged": False, "is_boss": False,
+    },
+    # ★★★★ Very Hard
+    "nazgul": {
+        "max_hp": 120, "str_val": 9, "dex_val": 6, "int_val": 5, "def_val": 8,
+        "atk_damage": 20, "attack_range": 2.0, "attack_cd": 60,
+        "detect_range": 8.0, "move_speed": 0.9, "wander_range": 6.0,
+        "xp_reward": 120, "gold_reward": 80, "drops": ["morgul_blade"],
+        "color": (30, 25, 40), "draw_size": (5, 5),
+        "ranged": False, "is_boss": False,
+    },
+    # ★★★★★ Boss
+    "balrog": {
+        "max_hp": 500, "str_val": 15, "dex_val": 5, "int_val": 8, "def_val": 12,
+        "atk_damage": 30, "attack_range": 2.0, "attack_cd": 70,
+        "detect_range": 8.0, "move_speed": 0.7, "wander_range": 4.0,
+        "xp_reward": 1000, "gold_reward": 500, "drops": ["one_ring"],
+        "color": (200, 60, 10), "draw_size": (8, 8),
+        "ranged": False, "is_boss": True,
+    },
     "orc": {
         "max_hp": 25, "str_val": 2, "dex_val": 1, "int_val": 0, "def_val": 1,
         "atk_damage": 4, "attack_range": 1.2, "attack_cd": 50,

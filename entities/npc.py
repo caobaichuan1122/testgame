@@ -167,8 +167,14 @@ class NPC(Entity):
             self.wx = new_wx
             self.wy = new_wy
             self._moving = True
+        elif game.iso_map and game.iso_map.is_walkable(new_wx, self.wy):
+            self.wx = new_wx
+            self._moving = True
+        elif game.iso_map and game.iso_map.is_walkable(self.wx, new_wy):
+            self.wy = new_wy
+            self._moving = True
         else:
-            # Hit obstacle, abandon current target
+            # Completely blocked — abandon current target
             self._move_target = None
             self._wait_timer = rnd.randint(30, 90)
             self._moving = False
@@ -202,6 +208,12 @@ class NPC(Entity):
 
         if game.iso_map and game.iso_map.is_walkable(new_wx, new_wy):
             self.wx = new_wx
+            self.wy = new_wy
+            self._moving = True
+        elif game.iso_map and game.iso_map.is_walkable(new_wx, self.wy):
+            self.wx = new_wx
+            self._moving = True
+        elif game.iso_map and game.iso_map.is_walkable(self.wx, new_wy):
             self.wy = new_wy
             self._moving = True
         else:

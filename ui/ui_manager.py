@@ -78,7 +78,7 @@ class UIManager:
 
         # While chat input is active
         if self._chat_input_active:
-            if key == pygame.K_RETURN:
+            if key in (pygame.K_RETURN, pygame.K_KP_ENTER):
                 # Send message
                 msg = self._chat_input_text.strip()
                 if msg:
@@ -117,7 +117,7 @@ class UIManager:
             return True
 
         # Enter opens chat input box
-        if key == pygame.K_RETURN:
+        if key in (pygame.K_RETURN, pygame.K_KP_ENTER):
             self._chat_input_active = True
             self._chat_input_text = ""
             return True
@@ -148,6 +148,15 @@ class UIManager:
         if game.quest_manager:
             quest_hint = game.quest_manager.active_quest_hint
         self.hud.draw(surface, player, quest_hint)
+
+        # Zone entry banner
+        if getattr(game, "_zone_banner_timer", 0) > 0:
+            self.hud.draw_zone_banner(
+                surface,
+                game._zone_banner_name,
+                game._zone_banner_diff,
+                game._zone_banner_timer,
+            )
 
         # Minimap
         self.minimap.draw(surface, player, game.entities)

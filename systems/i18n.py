@@ -576,6 +576,18 @@ LANG = {
         "en": "Morgul Shard",
         "zh": "魔窟碎片",
     },
+    "item_elven_longbow": {"en": "Elven Longbow", "zh": "精灵长弓"},
+    "item_morgul_blade": {"en": "Morgul Blade", "zh": "魔窟之刃"},
+    "item_dark_blade": {"en": "Dark Blade", "zh": "黑暗之刃"},
+    "item_wolf_pelt": {"en": "Wolf Pelt", "zh": "狼皮"},
+    "item_uruk_shield": {"en": "Uruk Shield", "zh": "乌鲁克盾"},
+    "item_mithril_helm": {"en": "Mithril Helm", "zh": "秘银头盔"},
+    "item_one_ring": {"en": "The One Ring", "zh": "至尊魔戒"},
+    "item_goblin_ear": {"en": "Goblin Ear", "zh": "哥布林耳朵"},
+    "item_spider_silk": {"en": "Spider Silk", "zh": "蜘蛛丝"},
+    "item_athelas": {"en": "Athelas", "zh": "阿西拉斯"},
+    "item_lembas_bread": {"en": "Lembas Bread", "zh": "兰巴斯面包"},
+    "item_phial_galadriel": {"en": "Phial of Galadriel", "zh": "加拉德瑞尔之瓶"},
     "item_miruvor": {
         "en": "Miruvor",
         "zh": "蜜酒",
@@ -628,6 +640,18 @@ LANG = {
         "en": "A cursed fragment from a Morgul blade.",
         "zh": "来自魔窟之刃的诅咒碎片。",
     },
+    "desc_elven_longbow": {"en": "A slender bow of Lothlórien mallorn, singing as it looses.", "zh": "洛丝罗瑞恩马伦木长弓，箭矢离弦时轻鸣。"},
+    "desc_morgul_blade": {"en": "A cursed Nazgûl blade that chills the soul.", "zh": "戒灵诅咒之刃，令灵魂颤栗。"},
+    "desc_dark_blade": {"en": "A heavy Uruk-hai sword, forged in Isengard's pits.", "zh": "乌鲁克铸造的重剑，出自艾辛格的熔炉。"},
+    "desc_wolf_pelt": {"en": "Rough warg pelt offering minimal but real protection.", "zh": "粗糙的座狼皮，提供些许防御。"},
+    "desc_uruk_shield": {"en": "Thick iron shield bearing the White Hand. Heavy but protective.", "zh": "刻有白手印记的铁盾，厚重却防御极佳。"},
+    "desc_mithril_helm": {"en": "A Dwarven-crafted helm of true mithril, light as feathers.", "zh": "矮人精铸的秘银盔，轻如鸿毛。"},
+    "desc_one_ring": {"en": "One Ring to rule them all, One Ring to find them...", "zh": "一枚魔戒统治众生，一枚魔戒将他们找寻……"},
+    "desc_goblin_ear": {"en": "A trophy taken from a fallen goblin scout.", "zh": "从倒下的哥布林斥候身上取下的战利品。"},
+    "desc_spider_silk": {"en": "Durable silk harvested from the brood of Shelob.", "zh": "从谢罗布后裔身上取得的坚韧蛛丝。"},
+    "desc_athelas": {"en": "Kingsfoil, the healer's herb — potent against dark wounds.", "zh": "王者草，治愈草药——对抗黑暗创伤极为有效。"},
+    "desc_lembas_bread": {"en": "One small bite will fill the stomach of a grown Man.", "zh": "一小口便能填饱成年人的胃。"},
+    "desc_phial_galadriel": {"en": "Star of Eärendil — a light in dark places when all other lights go out.", "zh": "埃阿仁迪尔之星——当所有光芒熄灭，它仍照亮黑暗之处。"},
     "desc_miruvor": {
         "en": "The cordial of Imladris, restoring the weary.",
         "zh": "伊姆拉缀斯的甘露，恢复疲惫的旅人。",
@@ -751,6 +775,35 @@ LANG = {
         "en": "I miss the Shire something fierce.",
         "zh": "我太想念夏尔了。",
     },
+
+    # Bilbo (Rivendell)
+    "idle_bilbo_1": {"en": "I need a holiday... a very long holiday.", "zh": "我需要一次假期……一次很长很长的假期。"},
+    "idle_bilbo_2": {"en": "I'm old, Gandalf. I know I don't look it, but I'm beginning to feel it.", "zh": "我老了，甘道夫。我知道看不出来，但我开始感受到了。"},
+    "idle_bilbo_3": {"en": "Rivendell's libraries hold secrets untold.", "zh": "瑞文戴尔的图书馆藏有无数秘密。"},
+    # Legolas (Lothlórien)
+    "idle_legolas_1": {"en": "The forest speaks to those who listen.", "zh": "森林向聆听者诉说。"},
+    "idle_legolas_2": {"en": "My arrow seldom misses its mark.", "zh": "我的箭矢鲜有失误。"},
+    "idle_legolas_3": {"en": "The Lady Galadriel sees all within these woods.", "zh": "加拉德瑞尔女士洞察这片树林的一切。"},
+    # Éowyn (West Rohan)
+    "idle_eowyn_1": {"en": "I am no man!", "zh": "我不是男人！"},
+    "idle_eowyn_2": {"en": "Rohan's fields need defending.", "zh": "洛汗的田野需要守护。"},
+    "idle_eowyn_3": {"en": "I can fight as well as any rider.", "zh": "我能像任何骑士一样战斗。"},
+    # Théoden (Rohan Center)
+    "idle_theoden_1": {"en": "Arise! Arise, Riders of Rohan!", "zh": "起来！起来，洛汗的骑士们！"},
+    "idle_theoden_2": {"en": "Courage, friends! For Rohan and for glory!", "zh": "勇气，朋友们！为了洛汗，为了荣耀！"},
+    "idle_theoden_3": {"en": "The hour is come. Fell deeds awake.", "zh": "时刻已到。不祥之事觉醒。"},
+    # Aragorn (Weathertop)
+    "idle_aragorn_1": {"en": "The Nazgûl hunt us even now.", "zh": "戒灵此刻仍在追猎我们。"},
+    "idle_aragorn_2": {"en": "I am Aragorn, son of Arathorn. Not all who wander are lost.", "zh": "我是阿拉贡，阿拉松之子。流浪者并非皆迷途。"},
+    "idle_aragorn_3": {"en": "Keep your blades sharp. The Enemy never rests.", "zh": "保持刀刃锋利。敌人从不休息。"},
+    # Faramir (Osgiliath)
+    "idle_faramir_1": {"en": "Osgiliath falls... but we hold the line.", "zh": "奥斯吉利亚斯已失……但我们坚守阵线。"},
+    "idle_faramir_2": {"en": "I do not love the bright sword for its sharpness, but the things it defends.", "zh": "我不爱利剑，而爱它所守护的一切。"},
+    "idle_faramir_3": {"en": "Gondor calls for aid, but none comes.", "zh": "刚铎呼唤援军，却无人响应。"},
+    # Gollum (Dead Marshes)
+    "idle_gollum_1": {"en": "Sssneaky little hobbitses... precious...", "zh": "鬼鬼祟祟的小霍比特人……至尊宝……"},
+    "idle_gollum_2": {"en": "The faces! We sees their faces in the water!", "zh": "那些脸！我们看到了水中的脸！"},
+    "idle_gollum_3": {"en": "Wicked tricksy falssse!", "zh": "邪恶、狡猾、虚伪！"},
 
     # ========================
     #  Dialogue (NPC dialogue tree text)
@@ -893,6 +946,93 @@ LANG = {
         "zh": "你做到了！而且还赶上了时间！现在也许我能钓到一两条鱼了。这是你的奖励，当之无愧！",
     },
 
+    # Bilbo dialogue
+    "dlg_bilbo_default": {
+        "en": "Ah, a traveler! Welcome to Rivendell. Master Elrond keeps fine shops here — the finest this side of the Lonely Mountain.",
+        "zh": "啊，一位旅人！欢迎来到瑞文戴尔。埃尔隆德大师在此开设了精良的商店——是孤山以西最好的。",
+    },
+    "dlg_bilbo_story": {
+        "en": "I once walked these paths myself, you know. Quite the adventure. There and Back Again, I called it.",
+        "zh": "我自己也曾走过这些路，你知道的。真是一段历险。我称之为《霍比特人历险记》。",
+    },
+    # Legolas dialogue
+    "dlg_legolas_default": {
+        "en": "Mae govannen, friend. The wolves of Lothlórien grow bold. My arrows thin their numbers, but more help is welcome.",
+        "zh": "Mae govannen，朋友。洛丝罗瑞恩的狼群愈发猖獗。我的箭矢削减了它们的数量，但更多帮助总是受欢迎的。",
+    },
+    "quest_wolf_accept": {
+        "en": "Swift and true — hunt down 5 wolves prowling the forest edge. The Galadhrim will reward you.",
+        "zh": "迅速而准确——猎杀在森林边缘游荡的5匹狼。加拉德瑞姆将给予你奖励。",
+    },
+    "quest_wolf_progress": {"en": "Still hunting? The wolves run deep into the wood.", "zh": "还在猎杀？狼群深入了森林。"},
+    "quest_wolf_complete": {"en": "Well shot! Lothlórien is safer for your aid. Take these as your reward.", "zh": "射得好！感谢你的帮助，洛丝罗瑞恩更安全了。拿走这些奖励。"},
+    # Éowyn dialogue
+    "dlg_eowyn_default": {
+        "en": "Rohan needs defenders! Goblin raiders have been harassing our villages. Will you drive them back?",
+        "zh": "洛汗需要守护者！哥布林劫掠者一直骚扰我们的村庄。你愿意驱逐它们吗？",
+    },
+    "quest_goblin_accept": {
+        "en": "Strike down 8 goblins raiding the western farms. For Rohan!",
+        "zh": "击杀8只袭击西部农场的哥布林。为了洛汗！",
+    },
+    "quest_goblin_progress": {"en": "Keep fighting! The goblins still raid our farms.", "zh": "继续战斗！哥布林仍在袭击我们的农场。"},
+    "quest_goblin_complete": {"en": "You have the courage of a shield-maiden! Take this reward in Rohan's name.", "zh": "你有盾娘的勇气！以洛汗之名接受此奖励。"},
+    # Théoden dialogue
+    "dlg_theoden_default": {
+        "en": "Rider, Rohan is beset on all sides. The Uruk-hai berserkers march from the east. Defeat them and Rohan will honor you.",
+        "zh": "骑士，洛汗四面受敌。乌鲁克狂战士从东方进军。击败他们，洛汗将荣耀你。",
+    },
+    "quest_berserker_accept": {
+        "en": "Slay 4 Uruk-hai berserkers in East Rohan. They wear the white hand of Saruman — show them no mercy.",
+        "zh": "在洛汗东部斩杀4名乌鲁克狂战士。他们佩戴萨鲁曼的白手印记——不要对他们留情。",
+    },
+    "quest_berserker_progress": {"en": "Still fighting? The berserkers are fierce, but so is Rohan's spirit!", "zh": "还在战斗？狂战士凶猛，但洛汗的精神更强！"},
+    "quest_berserker_complete": {"en": "Rohan's debt to you is great. Take this from our armory.", "zh": "洛汗欠你一份大恩。从我们的军械库拿取这些。"},
+    # Aragorn dialogue
+    "dlg_aragorn_default": {
+        "en": "Friend or foe? Good — we need allies here. A Nazgûl scouts Weathertop. If you are brave enough, drive it off.",
+        "zh": "朋友还是敌人？好——我们在这里需要盟友。一名戒灵在风云顶侦察。如果你足够勇敢，把它驱走。",
+    },
+    "quest_nazgul_accept": {
+        "en": "The Nazgûl is wreathed in shadow atop Weathertop. It must be driven back to Mordor — defeat it!",
+        "zh": "戒灵笼罩在风云顶的阴影中。必须将它驱回魔多——击败它！",
+    },
+    "quest_nazgul_progress": {"en": "The Wraith still lurks nearby. Its presence chills the very stone.", "zh": "幽灵仍在附近徘徊。它的存在令石头都寒彻。"},
+    "quest_nazgul_complete": {"en": "You faced a Nazgûl and lived! Few can say as much. This blade is yours.", "zh": "你面对了戒灵并活了下来！没几个人能这么说。这把剑是你的了。"},
+    # Faramir dialogue
+    "dlg_faramir_default": {
+        "en": "Gondor's last outpost here is beset by the undead. Five undead soldiers haunt the ruins — clear them out!",
+        "zh": "刚铎在此的最后哨站被不死军所围。五名不死士兵在遗迹中游荡——清除他们！",
+    },
+    "quest_undead_accept": {
+        "en": "Slay 5 undead haunting the Osgiliath ruins. May Gondor stand another day.",
+        "zh": "斩杀5名在奥斯吉利亚斯遗迹游荡的不死者。愿刚铎再多撑一天。",
+    },
+    "quest_undead_progress": {"en": "The undead are relentless. But so are you, I trust.", "zh": "不死者毫不留情。但我相信你也是如此。"},
+    "quest_undead_complete": {"en": "The ruins are quiet again. Gondor thanks you — take these supplies.", "zh": "遗迹再次宁静。刚铎感谢你——拿走这些补给。"},
+    # Gollum dialogue
+    "dlg_gollum_default": {
+        "en": "Sssst! Don't speak to Gollum! We knows what you wants — precious things in the marshes! Danger, danger!",
+        "zh": "嘶——！不要跟咕噜说话！我们知道你要什么——沼泽里有珍贵的东西！危险，危险！",
+    },
+    # Balrog (Mount Doom boss)
+    "dlg_mount_doom_npc": {
+        "en": "This is the end. Mount Doom's fires burn eternal. Only by casting the One Ring into the Crack of Doom can darkness be ended. But first — the Balrog blocks your path!",
+        "zh": "这就是终点。末日山的火焰永恒燃烧。只有将至尊魔戒投入末日裂缝，黑暗才能终结。但首先——炎魔挡住了你的去路！",
+    },
+    "quest_balrog_accept": {
+        "en": "The Balrog of Morgoth — You Must Not Pass! Destroy the ancient demon and cast the Ring into the fire!",
+        "zh": "魔苟斯的炎魔——你不能通过！消灭这古老的恶魔，将魔戒投入火中！",
+    },
+    "quest_balrog_progress": {"en": "The Balrog still stands. Its flame cannot be quenched by doubt!", "zh": "炎魔仍在。它的火焰不能被怀疑所扑灭！"},
+    "quest_balrog_complete": {"en": "The Balrog is cast down! The Ring is destroyed! Middle-earth is saved!", "zh": "炎魔被击落！魔戒毁灭！中土世界得救了！"},
+    # Rivendell shop keeper (Bilbo)
+    "quest_spider_accept": {
+        "en": "Giant spiders from Mirkwood have infested the mountain passes. Clear out 6 of them for safe passage.",
+        "zh": "来自幽暗密林的巨型蜘蛛侵占了山道。清除6只以确保通行安全。",
+    },
+    "quest_spider_progress": {"en": "Still tangled in webs? Keep cutting your way through!", "zh": "还困在蜘蛛网中？继续杀出一条血路！"},
+    "quest_spider_complete": {"en": "The mountain road is clear! Take this elven gift in thanks.", "zh": "山道畅通了！拿走这件精灵礼物作为谢礼。"},
     # --- Dialogue options ---
     "opt_ok": {
         "en": "OK",
@@ -1059,6 +1199,32 @@ LANG = {
         "zh": "在60秒内击败3个乌鲁克弓箭手！",
     },
 
+    # New quest names / descriptions
+    "quest_name_goblin": {"en": "Goblin Raiders", "zh": "哥布林劫掠者"},
+    "quest_desc_goblin": {"en": "Defeat 8 goblins raiding the western farms.", "zh": "击败8只袭击西部农场的哥布林。"},
+    "quest_name_wolf": {"en": "Wolf Hunt", "zh": "猎杀狼群"},
+    "quest_desc_wolf": {"en": "Hunt down 5 wolves prowling the Lothlórien border.", "zh": "猎杀5匹在洛丝罗瑞恩边境游荡的狼。"},
+    "quest_name_spider": {"en": "Spider Infestation", "zh": "蜘蛛侵扰"},
+    "quest_desc_spider": {"en": "Slay 6 giant spiders blocking the mountain passes.", "zh": "斩杀6只堵塞山道的巨型蜘蛛。"},
+    "quest_name_berserker": {"en": "Berserker Assault", "zh": "狂战士突袭"},
+    "quest_desc_berserker": {"en": "Slay 4 Uruk-hai berserkers in East Rohan.", "zh": "在洛汗东部斩杀4名乌鲁克狂战士。"},
+    "quest_name_undead": {"en": "Cleansing Osgiliath", "zh": "清洗奥斯吉利亚斯"},
+    "quest_desc_undead": {"en": "Slay 5 undead soldiers haunting the ruins.", "zh": "斩杀5名在遗迹游荡的不死士兵。"},
+    "quest_name_nazgul": {"en": "The Wraith of Weathertop", "zh": "风云顶的幽灵"},
+    "quest_desc_nazgul": {"en": "Drive the Nazgûl from Weathertop Ruins.", "zh": "将戒灵从风云顶遗迹驱走。"},
+    "quest_name_balrog": {"en": "The Flame of Morgoth", "zh": "魔苟斯之焰"},
+    "quest_desc_balrog": {"en": "Defeat the Balrog at Mount Doom.", "zh": "在末日山击败炎魔。"},
+    # New dialogue option keys
+    "opt_whats_in_shire": {"en": "What's in the Shire?", "zh": "夏尔有什么？"},
+    "opt_tell_story": {"en": "Tell me a story", "zh": "给我讲个故事"},
+    "opt_hunt_wolves": {"en": "I'll hunt them!", "zh": "我去猎杀！"},
+    "opt_clear_spiders": {"en": "I'll clear the pass!", "zh": "我去清道！"},
+    "opt_slay_berserkers": {"en": "For Rohan!", "zh": "为了洛汗！"},
+    "opt_face_nazgul": {"en": "I'll drive it back!", "zh": "我去驱走它！"},
+    "opt_cleanse_ruins": {"en": "Gondor shall not fall!", "zh": "刚铎不会倒下！"},
+    "opt_destroy_ring": {"en": "Into the fire it goes!", "zh": "投入火焰！"},
+    "opt_careful_now": {"en": "I'll be careful.", "zh": "我会小心的。"},
+
     # ========================
     #  Exploration zone names
     # ========================
@@ -1076,20 +1242,70 @@ LANG = {
     },
 
     # ========================
+    #  Zone names
+    # ========================
+    "zone_shire": {"en": "The Shire", "zh": "夏尔"},
+    "zone_rivendell": {"en": "Rivendell", "zh": "瑞文戴尔"},
+    "zone_lothlorien": {"en": "Lothlórien", "zh": "洛丝罗瑞恩"},
+    "zone_weathertop": {"en": "Weathertop Ruins", "zh": "风云顶遗迹"},
+    "zone_fangorn": {"en": "Fangorn Forest", "zh": "法贡森林"},
+    "zone_hobbiton": {"en": "Hobbiton", "zh": "霍比屯"},
+    "zone_misty_mts": {"en": "Misty Mountains", "zh": "迷雾山脉"},
+    "zone_moria": {"en": "Mines of Moria", "zh": "摩瑞亚矿洞"},
+    "zone_rohan_west": {"en": "West Rohan", "zh": "洛汗西部"},
+    "zone_rohan_center": {"en": "Rohan Plains", "zh": "洛汗平原"},
+    "zone_rohan_east": {"en": "East Rohan", "zh": "洛汗东部"},
+    "zone_dead_marshes": {"en": "Dead Marshes", "zh": "死亡沼泽"},
+    "zone_anduin": {"en": "River Anduin", "zh": "安都因河"},
+    "zone_osgiliath": {"en": "Osgiliath Ruins", "zh": "奥斯吉利亚斯遗迹"},
+    "zone_mordor": {"en": "Mordor Wastes", "zh": "魔多荒原"},
+    "zone_mount_doom": {"en": "Mount Doom", "zh": "末日山"},
+
+    # ========================
+    #  Difficulty labels
+    # ========================
+    "zone_enter": {"en": "{name}  [{diff}]", "zh": "{name}  [{diff}]"},
+
+    # ========================
     #  Equipment slot names
     # ========================
-    "slot_weapon": {
-        "en": "weapon",
-        "zh": "武器",
-    },
-    "slot_armor": {
-        "en": "armor",
-        "zh": "护甲",
-    },
-    "slot_accessory": {
-        "en": "accessory",
-        "zh": "饰品",
-    },
+    "slot_weapon":    {"en": "Weapon",  "zh": "武器"},
+    "slot_helmet":    {"en": "Helmet",  "zh": "头盔"},
+    "slot_armor":     {"en": "Armor",   "zh": "护甲"},
+    "slot_boots":     {"en": "Boots",   "zh": "靴子"},
+    "slot_ring":      {"en": "Ring",    "zh": "戒指"},
+    "slot_amulet":    {"en": "Amulet",  "zh": "项链"},
+    "slot_accessory": {"en": "Accessory", "zh": "饰品"},  # legacy
+    "slot_none":      {"en": "── empty ──", "zh": "── 空 ──"},
+
+    # ========================
+    #  Rarity labels
+    # ========================
+    "rarity_common":    {"en": "Common",    "zh": "普通"},
+    "rarity_uncommon":  {"en": "Uncommon",  "zh": "优秀"},
+    "rarity_rare":      {"en": "Rare",      "zh": "稀有"},
+    "rarity_epic":      {"en": "Epic",      "zh": "史诗"},
+    "rarity_legendary": {"en": "Legendary", "zh": "传说"},
+
+    # ========================
+    #  Stat labels (short)
+    # ========================
+    "stat_atk":  {"en": "ATK",  "zh": "攻击"},
+    "stat_def":  {"en": "DEF",  "zh": "防御"},
+    "stat_str":  {"en": "STR",  "zh": "力量"},
+    "stat_dex":  {"en": "DEX",  "zh": "敏捷"},
+    "stat_int":  {"en": "INT",  "zh": "智力"},
+    "stat_crit": {"en": "CRIT", "zh": "暴击"},
+
+    # ========================
+    #  Set bonus labels
+    # ========================
+    "set_mithril": {"en": "Mithril Set",  "zh": "秘银套装"},
+    "set_ranger":  {"en": "Ranger Set",   "zh": "游侠套装"},
+    "set_shadow":  {"en": "Shadow Set",   "zh": "暗影套装"},
+    "set_bonus":   {"en": "Set Bonus",    "zh": "套装加成"},
+    "set_active":  {"en": "ACTIVE",       "zh": "已激活"},
+    "set_partial": {"en": "{n}/{total}",  "zh": "{n}/{total}"},
 
     # ========================
     #  Language switching
@@ -1221,6 +1437,30 @@ LANG = {
     "settings_music": {
         "en": "Music",
         "zh": "音乐",
+    },
+    "settings_volume": {
+        "en": "Music Volume",
+        "zh": "音乐音量",
+    },
+    "settings_fps": {
+        "en": "Show FPS",
+        "zh": "显示帧率",
+    },
+    "settings_difficulty": {
+        "en": "Difficulty",
+        "zh": "游戏难度",
+    },
+    "diff_easy": {
+        "en": "Easy",
+        "zh": "简单",
+    },
+    "diff_normal": {
+        "en": "Normal",
+        "zh": "普通",
+    },
+    "diff_hard": {
+        "en": "Hard",
+        "zh": "困难",
     },
     "settings_nav_hint": {
         "en": "[UP/DOWN] Select   [LEFT/RIGHT] Change   [ESC] Back",

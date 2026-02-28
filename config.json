@@ -5,5 +5,8 @@
   ],
   "fullscreen": false,
   "language": "zh",
-  "music_enabled": true
+  "music_enabled": true,
+  "music_volume_idx": 5,
+  "show_fps": true,
+  "difficulty": "normal"
 }

@@ -62,3 +62,43 @@ class HUD:
                       sw // 2 - tw // 2,
                       sh - ui(24),
                       font_sm, COLOR_ACCENT)
+
+    def draw_zone_banner(self, surface, banner_name, banner_diff, timer, max_timer=240):
+        """Draw a centered zone-entry banner with fade in/out."""
+        if timer <= 0 or not banner_name:
+            return
+        sw, sh = surface.get_size()
+        # Fade: in for first 30 frames, out for last 60 frames
+        if timer > max_timer - 30:
+            alpha = int(255 * (max_timer - timer) / 30)
+        elif timer < 60:
+            alpha = int(255 * timer / 60)
+        else:
+            alpha = 255
+        alpha = max(0, min(255, alpha))
+
+        font_lg = get_font(ui(9))
+        font_sm_local = get_font(FONT_UI_SM)
+
+        # Measure text
+        name_surf = font_lg.render(banner_name, False, (255, 240, 200))
+        diff_surf = font_sm_local.render(banner_diff, False, (220, 180, 80))
+
+        banner_w = max(name_surf.get_width(), diff_surf.get_width()) + ui(20)
+        banner_h = name_surf.get_height() + diff_surf.get_height() + ui(10)
+        bx = sw // 2 - banner_w // 2
+        by = sh // 5
+
+        # Semi-transparent background
+        bg = pygame.Surface((banner_w, banner_h), pygame.SRCALPHA)
+        bg.fill((0, 0, 0, int(alpha * 0.75)))
+        pygame.draw.rect(bg, (180, 150, 60, alpha // 2), (0, 0, banner_w, banner_h), 1)
+        surface.blit(bg, (bx, by))
+
+        # Zone name
+        name_surf.set_alpha(alpha)
+        surface.blit(name_surf, (sw // 2 - name_surf.get_width() // 2, by + ui(4)))
+        # Difficulty
+        diff_surf.set_alpha(alpha)
+        surface.blit(diff_surf, (sw // 2 - diff_surf.get_width() // 2,
+                                  by + ui(4) + name_surf.get_height() + ui(2)))

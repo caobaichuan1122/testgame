@@ -10,28 +10,28 @@ log = get_logger("save")
 
 _BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SAVE_DIR   = os.path.join(_BASE, "saves")
-SAVE_VERSION = 2
+SAVE_VERSION = 3
 SLOT_COUNT = 10
-
-# Zone boundaries (tile world-units, matches demo_level zones)
-_ZONES = [
-    ("zone_fangorn",  2,  2, 18, 18),
-    ("zone_moria",   22,  2, 38, 18),
-    ("zone_mordor",  42, 42, 58, 58),
-]
-
 
 def slot_file(slot: int) -> str:
     """Return path for save_01 … save_10."""
     return os.path.join(SAVE_DIR, f"save_{slot:02d}.json")
 
 
-def _get_zone(wx: float, wy: float) -> str:
-    """Return zone i18n key for player position, default 'Hobbiton'."""
-    for key, x1, y1, x2, y2 in _ZONES:
-        if x1 <= wx <= x2 and y1 <= wy <= y2:
-            return key
-    return "Hobbiton"
+def _zone_display_name(game) -> str:
+    """Return a translated zone name for the save slot display."""
+    if not game.scene_mgr:
+        return "Unknown"
+    active_id = game.scene_mgr.active_id
+    try:
+        from systems.i18n import t
+        from world.demo_level import ZONES
+        for z in ZONES:
+            if z["id"] == active_id:
+                return t(z["name_key"])
+    except Exception:
+        pass
+    return active_id
 
 
 def list_slots() -> list:
@@ -61,19 +61,11 @@ def save(game, slot: int) -> bool:
     inv   = player.inventory
 
     # Build meta block
-    zone_key = _get_zone(player.wx, player.wy)
-    # Translate zone name if possible
-    try:
-        from systems.i18n import t
-        zone_name = t(zone_key)
-    except Exception:
-        zone_name = zone_key
-
     meta = {
         "slot":      slot,
         "save_time": datetime.now().strftime("%Y-%m-%d %H:%M"),
         "level":     stats.level,
-        "zone":      zone_name,
+        "zone":      _zone_display_name(game),
     }
 
     data = {
@@ -101,6 +93,7 @@ def save(game, slot: int) -> bool:
                 "equipped": dict(inv.equipped),
             },
         },
+        "current_scene": game.scene_mgr.active_id if game.scene_mgr else "hobbiton",
         "quests":       {},
         "enemies_dead": [],
     }
@@ -147,12 +140,17 @@ def load(game, slot: int) -> bool:
         log.error("Load failed (slot %d, read error): %s", slot, exc)
         return False
 
-    if data.get("version") not in (SAVE_VERSION,):
+    if data.get("version") not in (SAVE_VERSION, 2):  # accept v2 (will be migrated)
         log.warning("Save version mismatch in slot %d (%s), ignoring", slot, data.get("version"))
         return False
 
     # Rebuild level fresh, then overlay saved data
     game.load_level()
+
+    # Restore scene before applying positions / dead enemies
+    saved_scene = data.get("current_scene", "hobbiton")
+    if saved_scene != "hobbiton" and game.scene_mgr:
+        game._activate_scene(saved_scene, start_fade=False)
 
     player = game.entities.player
     stats  = player.stats
@@ -178,7 +176,16 @@ def load(game, slot: int) -> bool:
     id_ = pd["inventory"]
     inv.gold     = id_["gold"]
     inv.items    = id_["items"]
-    inv.equipped = id_["equipped"]
+    raw_equipped = id_["equipped"]
+    # Migrate old format: "accessory" slot → "ring"
+    if "accessory" in raw_equipped and "ring" not in raw_equipped:
+        raw_equipped["ring"] = raw_equipped.pop("accessory")
+    # Fill any missing new slots with None
+    from systems.inventory import EQUIP_SLOTS
+    for slot in EQUIP_SLOTS:
+        if slot not in raw_equipped:
+            raw_equipped[slot] = None
+    inv.equipped = raw_equipped
 
     for qid, qd in data.get("quests", {}).items():
         if qid in game.quest_manager.quests:
@@ -188,6 +195,7 @@ def load(game, slot: int) -> bool:
             if "discovered" in qd:
                 q["discovered"] = qd["discovered"]
 
+    # Apply dead enemies to the restored scene
     dead_set = set(data.get("enemies_dead", []))
     for i, e in enumerate(game.entities.enemies):
         if i in dead_set:
